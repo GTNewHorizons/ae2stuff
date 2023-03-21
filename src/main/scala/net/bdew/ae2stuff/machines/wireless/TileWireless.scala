@@ -88,20 +88,20 @@ class TileWireless extends TileDataSlots with GridTile with VariableIdlePower {
       that.setIdlePowerUse(power)
       if (worldObj.blockExists(xCoord, yCoord, zCoord))
         worldObj.setBlockMetadataWithNotify(
-        this.xCoord,
-        this.yCoord,
-        this.zCoord,
-        1,
-        3
-      )
+          this.xCoord,
+          this.yCoord,
+          this.zCoord,
+          1,
+          3
+        )
       if (worldObj.blockExists(that.xCoord, that.yCoord, that.zCoord))
         worldObj.setBlockMetadataWithNotify(
-        that.xCoord,
-        that.yCoord,
-        that.zCoord,
-        1,
-        3
-      )
+          that.xCoord,
+          that.yCoord,
+          that.zCoord,
+          1,
+          3
+        )
       return true
     }
     false
@@ -117,12 +117,12 @@ class TileWireless extends TileDataSlots with GridTile with VariableIdlePower {
       other.setIdlePowerUse(0d)
       if (worldObj.blockExists(other.xCoord, other.yCoord, other.zCoord))
         worldObj.setBlockMetadataWithNotify(
-        other.xCoord,
-        other.yCoord,
-        other.zCoord,
-        0,
-        3
-      )
+          other.xCoord,
+          other.yCoord,
+          other.zCoord,
+          0,
+          3
+        )
     }
     if (worldObj.blockExists(xCoord, yCoord, zCoord))
       worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, 0, 3)
