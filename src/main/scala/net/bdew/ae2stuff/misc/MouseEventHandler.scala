@@ -10,17 +10,15 @@
 package net.bdew.ae2stuff.misc
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent
-import net.bdew.ae2stuff.items.visualiser.{
-  ItemVisualiser,
-  VisualisationModes,
-  VisualiserOverlayRender
-}
+import net.bdew.ae2stuff.items.visualiser.{ItemVisualiser, VisualisationModes, VisualiserOverlayRender}
 import net.bdew.ae2stuff.network.{MsgVisualisationMode, NetHandler}
 import net.bdew.lib.{Client, Misc}
 import net.minecraftforge.client.event.MouseEvent
 import net.minecraftforge.common.MinecraftForge
 
 object MouseEventHandler {
+  private val VISUALISATION_MODES = VisualisationModes.values.toList
+
   def init(): Unit = {
     MinecraftForge.EVENT_BUS.register(this)
   }
@@ -37,12 +35,12 @@ object MouseEventHandler {
       val newMode =
         if (ev.dwheel.signum > 0)
           Misc.nextInSeq(
-            VisualisationModes.modes,
+            VISUALISATION_MODES,
             ItemVisualiser.getMode(stack)
           )
         else
           Misc.prevInSeq(
-            VisualisationModes.modes,
+            VISUALISATION_MODES,
             ItemVisualiser.getMode(stack)
           )
       ItemVisualiser.setMode(stack, newMode)
