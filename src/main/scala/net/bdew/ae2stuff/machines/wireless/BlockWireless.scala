@@ -9,6 +9,7 @@
 
 package net.bdew.ae2stuff.machines.wireless
 
+import appeng.api.util.AEColor
 import appeng.items.tools.quartz.ToolQuartzCuttingKnife
 import cpw.mods.fml.relauncher.{Side, SideOnly}
 import net.bdew.ae2stuff.misc.{BlockWrenchable, MachineMaterial}
@@ -20,7 +21,8 @@ import net.minecraft.entity.EntityLivingBase
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.ItemStack
 import net.minecraft.util.IIcon
-import net.minecraft.world.World
+import net.minecraft.world.{IBlockAccess, World}
+import net.minecraftforge.common.util.ForgeDirection
 
 object BlockWireless
     extends SimpleBlock("Wireless", MachineMaterial)
@@ -79,30 +81,41 @@ object BlockWireless
     false
   }
 
-  var icon_on_side: IIcon = null
-  var icon_off_side: IIcon = null
-  var icon_on_top: IIcon = null
-  var icon_off_top: IIcon = null
+  var icon_on: List[IIcon] = null
+  var icon_off: IIcon = null
 
   @SideOnly(Side.CLIENT)
-  override def getIcon(side: Int, meta: Int): IIcon =
-    if (side == 0 || side == 1) {
-      if (meta > 0)
-        icon_on_top
-      else
-        icon_off_top
-    } else {
-      if (meta > 0)
-        icon_on_side
-      else
-        icon_off_side
+  override def getIcon(
+      worldIn: IBlockAccess,
+      x: Int,
+      y: Int,
+      z: Int,
+      side: Int
+  ): IIcon = {
+    val te = worldIn.getTileEntity(x, y, z)
+    val meta = worldIn.getBlockMetadata(x, y, z)
+
+    if (te.isInstanceOf[TileWireless]) {
+      if (meta > 0) {
+        val color = te.asInstanceOf[TileWireless].color.ordinal()
+        return icon_on.apply(color)
+      }
     }
+    icon_off
+  }
+
+  override def getIcon(side: Int, meta: Int): IIcon = {
+    icon_on.apply(AEColor.Transparent.ordinal())
+  }
 
   @SideOnly(Side.CLIENT)
   override def registerBlockIcons(reg: IIconRegister): Unit = {
-    icon_on_side = reg.registerIcon(Misc.iconName(modId, name, "side_on"))
-    icon_off_side = reg.registerIcon(Misc.iconName(modId, name, "side_off"))
-    icon_on_top = reg.registerIcon(Misc.iconName(modId, name, "top_on"))
-    icon_off_top = reg.registerIcon(Misc.iconName(modId, name, "top_off"))
+    val index = 1.to(17)
+    icon_on = index
+      .map(index =>
+        reg.registerIcon(Misc.iconName(modId, name, "side_on" + index))
+      )
+      .toList
+    icon_off = reg.registerIcon(Misc.iconName(modId, name, "side_off"))
   }
 }

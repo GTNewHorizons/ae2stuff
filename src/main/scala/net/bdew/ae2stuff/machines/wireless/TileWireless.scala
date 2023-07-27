@@ -14,12 +14,12 @@ import appeng.api.AEApi
 import appeng.api.implementations.tiles.IColorableTile
 import appeng.api.networking.{GridFlags, IGridConnection}
 import appeng.api.util.AEColor
-import appeng.me.helpers.AENetworkProxy
 import net.bdew.ae2stuff.AE2Stuff
 import net.bdew.ae2stuff.grid.{GridTile, VariableIdlePower}
 import net.bdew.lib.block.BlockRef
 import net.bdew.lib.data.base.{TileDataSlots, UpdateKind}
 import net.bdew.lib.multiblock.data.DataSlotPos
+import net.bdew.lib.nbt.NBT
 import net.minecraft.block.Block
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.ItemStack
@@ -173,6 +173,16 @@ class TileWireless
     }
     val colorIdx = t.getShort("Color").toInt
     this.color = AEColor.values().apply(colorIdx)
+    if (hasWorldObj) {
+      worldObj.markBlockRangeForRenderUpdate(
+        xCoord,
+        yCoord,
+        zCoord,
+        xCoord,
+        yCoord,
+        zCoord
+      )
+    }
   }
 
   override def recolourBlock(
@@ -180,8 +190,15 @@ class TileWireless
       colour: AEColor,
       who: EntityPlayer
   ): Boolean = {
+    if (this.color == colour) {
+      return false
+    }
     this.color = colour
-    this.getGridNode(side).updateState()
+    if (getGridNode(side) != null) {
+      getGridNode(side).updateState()
+      worldObj.markBlockForUpdate(xCoord, yCoord, zCoord)
+//      markDirty()
+    }
     true
   }
 
