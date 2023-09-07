@@ -10,7 +10,10 @@
 package net.bdew.ae2stuff.machines.wireless
 
 import appeng.api.util.AEColor
+import appeng.core.AppEng
+import appeng.core.sync.GuiBridge
 import appeng.items.tools.quartz.ToolQuartzCuttingKnife
+import appeng.util.Platform
 import cpw.mods.fml.relauncher.{Side, SideOnly}
 import net.bdew.ae2stuff.misc.{BlockWrenchable, MachineMaterial}
 import net.bdew.lib.Misc
@@ -74,7 +77,16 @@ object BlockWireless
   ): Boolean = {
     val item = player.getHeldItem
     if (item != null && item.getItem.isInstanceOf[ToolQuartzCuttingKnife]) {
-      if (!world.isRemote) {
+      val te = world.getTileEntity(x, y, z)
+      if (te.isInstanceOf[TileWireless]) {
+        player.openGui(
+          AppEng.instance,
+          (GuiBridge.GUI_RENAMER.ordinal << 5) | side,
+          world,
+          te.xCoord,
+          te.yCoord,
+          te.zCoord
+        )
         return true
       }
     }

@@ -36,28 +36,28 @@ object WailaWirelessDataProvider
       val pos = te.link map (link =>
         NBT.from(link.writeToNBT _)
       ) getOrElse new NBTTagCompound
-      tag.setTag(
-        "wireless_waila",
-        NBT(
-          "connected" -> true,
-          "target" -> pos,
-          "channels" -> (if (te.connection != null)
-                           te.connection.getUsedChannels
-                         else 0),
-          "power" -> PowerMultiplier.CONFIG.multiply(te.getIdlePowerUsage),
-          "name" -> te.customName,
-          "color" -> te.color.ordinal()
-        )
+      val data = NBT(
+        "connected" -> true,
+        "target" -> pos,
+        "channels" -> (if (te.connection != null)
+                         te.connection.getUsedChannels
+                       else 0),
+        "power" -> PowerMultiplier.CONFIG.multiply(te.getIdlePowerUsage),
+        "color" -> te.color.ordinal()
       )
+      if (te.hasCustomName) {
+        data.setString("name", te.customName)
+      }
+      tag.setTag("wireless_waila", data)
     } else {
-      tag.setTag(
-        "wireless_waila",
-        NBT(
-          "connected" -> false,
-          "name" -> te.customName,
-          "color" -> te.color.ordinal()
-        )
+      val data = NBT(
+        "connected" -> false,
+        "color" -> te.color.ordinal()
       )
+      if (te.hasCustomName) {
+        data.setString("name", te.customName)
+      }
+      tag.setTag("wireless_waila", data)
     }
     tag
   }
@@ -70,7 +70,7 @@ object WailaWirelessDataProvider
   ): Iterable[String] = {
     if (acc.getNBTData.hasKey("wireless_waila")) {
       val data = acc.getNBTData.getCompoundTag("wireless_waila")
-      val name = data.getString("name")
+      val name = if (data.hasKey("name")) data.getString("name") else null
       val color = data.getInteger("color")
       if (data.getBoolean("connected")) {
         val pos = BlockRef.fromNBT(data.getCompoundTag("target"))
@@ -86,7 +86,7 @@ object WailaWirelessDataProvider
             DecFormat.short(data.getDouble("power"))
           )
         )
-          .++(if (name != "") {
+          .++(if (name != null) {
             Misc.toLocalF("ae2stuff.waila.wireless.name", name) :: Nil
           } else Nil)
           .++(if (color != AEColor.Transparent.ordinal()) {
@@ -94,7 +94,7 @@ object WailaWirelessDataProvider
           } else Nil)
       } else {
         List(Misc.toLocal("ae2stuff.waila.wireless.notconnected"))
-          .++(if (name != "") {
+          .++(if (name != null) {
             Misc.toLocalF("ae2stuff.waila.wireless.name", name) :: Nil
           } else Nil)
           .++(if (color != AEColor.Transparent.ordinal()) {

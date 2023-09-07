@@ -12,8 +12,10 @@ package net.bdew.ae2stuff.machines.wireless
 import java.util
 import appeng.api.AEApi
 import appeng.api.implementations.tiles.IColorableTile
-import appeng.api.networking.{GridFlags, IGridConnection}
+import appeng.api.networking.security.IActionHost
+import appeng.api.networking.{GridFlags, IGridConnection, IGridNode}
 import appeng.api.util.AEColor
+import appeng.helpers.ICustomNameObject
 import net.bdew.ae2stuff.AE2Stuff
 import net.bdew.ae2stuff.grid.{GridTile, VariableIdlePower}
 import net.bdew.lib.block.BlockRef
@@ -30,7 +32,9 @@ import net.minecraftforge.common.util.ForgeDirection
 class TileWireless
     extends TileDataSlots
     with GridTile
+    with IActionHost
     with VariableIdlePower
+    with ICustomNameObject
     with IColorableTile {
   val cfg = MachineWireless
 
@@ -41,7 +45,7 @@ class TileWireless
 
   lazy val myPos = BlockRef.fromTile(this)
 
-  var customName: String = ""
+  var customName: String = null
   var color: AEColor = AEColor.Transparent
   def isLinked = link.isDefined
   def getLink = link flatMap (_.getTile[TileWireless](worldObj))
@@ -158,16 +162,17 @@ class TileWireless
 
   override def doSave(kind: UpdateKind.Value, t: NBTTagCompound): Unit = {
     super.doSave(kind, t)
-    if (customName != "") {
+    if (customName != null) {
       t.setString("CustomName", customName)
     }
-    t.setString("CustomName", customName)
     t.setShort("Color", color.ordinal().toShort)
   }
 
   override def doLoad(kind: UpdateKind.Value, t: NBTTagCompound): Unit = {
     super.doLoad(kind, t)
-    this.customName = t.getString("CustomName")
+    if (t.hasKey("CustomName")) {
+      this.customName = t.getString("CustomName")
+    }
     if (!t.hasKey("Color")) {
       t.setShort("Color", AEColor.Transparent.ordinal().toShort)
     }
@@ -197,7 +202,7 @@ class TileWireless
     if (getGridNode(side) != null) {
       getGridNode(side).updateState()
       worldObj.markBlockForUpdate(xCoord, yCoord, zCoord)
-//      markDirty()
+      markDirty()
     }
     true
   }
@@ -205,4 +210,15 @@ class TileWireless
   override def getColor: AEColor = color
 
   override def getGridColor: AEColor = color
+
+  override def getCustomName: String = customName
+
+  override def hasCustomName: Boolean = customName != null
+
+  override def setCustomName(name: String): Unit = {
+    this.customName = name
+    this.getLink.foreach(te => te.customName = name)
+    markDirty()
+  }
+  override def getActionableNode: IGridNode = this.node
 }
