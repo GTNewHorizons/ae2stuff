@@ -227,6 +227,12 @@ object VisualiserOverlayRender extends WorldOverlayRenderer {
       val stack = Client.player.inventory.getCurrentItem
       if (stack != null && stack.getItem == ItemVisualiser) {
 
+        // Do not render if in a different dimension from the bound network
+        val networkDim = stack.getTagCompound.getInteger("dim")
+        if (networkDim != Client.world.provider.dimensionId) {
+          return
+        }
+
         val mode = ItemVisualiser.getMode(stack)
 
         GL11.glPushAttrib(GL11.GL_ENABLE_BIT)
