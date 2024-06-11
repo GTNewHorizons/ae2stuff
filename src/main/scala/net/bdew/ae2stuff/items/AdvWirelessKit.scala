@@ -29,6 +29,9 @@ object AdvWirelessKit
     with AdvItemLocationStore {
   setMaxStackSize(1)
 
+  val MODE_QUEUING = 0;
+  val MODE_BINDING = 1;
+
   def checkSecurity(t1: TileWireless, t2: TileWireless, p: EntityPlayer) = {
     val pid = Security.getPlayerId(p)
     Security.playerHasPermission(
@@ -51,7 +54,7 @@ object AdvWirelessKit
     import net.bdew.lib.helpers.ChatHelper._
     if (!world.isRemote && player.isSneaking) {
       toggleMode(stack)
-      if (getMode(stack) == 0) {
+      if (getMode(stack) == MODE_QUEUING) {
         player.addChatMessage(
           L("ae2stuff.wireless.advtool.queueing.activated").setColor(
             Color.GREEN
@@ -84,13 +87,13 @@ object AdvWirelessKit
     if (!world.isRemote) {
       if (player.isSneaking) {
         toggleMode(stack)
-        if (getMode(stack) == 0) {
+        if (getMode(stack) == MODE_QUEUING) {
           player.addChatMessage(
             L("ae2stuff.wireless.advtool.queueing.activated").setColor(
               Color.GREEN
             )
           )
-        } else {
+        } else if (getMode(stack) == MODE_BINDING) {
           player.addChatMessage(
             L("ae2stuff.wireless.advtool.binding.activated").setColor(
               Color.GREEN
@@ -112,7 +115,7 @@ object AdvWirelessKit
           player.addChatMessage(
             L("ae2stuff.wireless.tool.security.player").setColor(Color.RED)
           )
-        } else if (getMode(stack) == 0) {
+        } else if (getMode(stack) == MODE_QUEUING) {
           addLocation(stack, pos, world.provider.dimensionId)
           player.addChatMessage(
             L(
@@ -122,7 +125,7 @@ object AdvWirelessKit
               pos.z.toString
             ).setColor(Color.GREEN)
           )
-        } else if (getMode(stack) == 1) {
+        } else if (getMode(stack) == MODE_BINDING) {
           if (hasLocation(stack)) {
             // Have other location - start connecting
             val otherPos = getNextLocation(stack)
@@ -183,6 +186,7 @@ object AdvWirelessKit
                           ) & ": " & e.getMessage).setColor(Color.RED)
                         )
                         tile.doUnlink()
+                        print("Failed to link wireless connector: " + e)
                     }
                   }
                   popLocation(stack)
@@ -224,7 +228,7 @@ object AdvWirelessKit
         )
       )
     }
-    if (getMode(stack) == 0) {
+    if (getMode(stack) == MODE_QUEUING) {
       list.add(Misc.toLocal("ae2stuff.wireless.advtool.queueing"))
       if (getLocations(stack).tagCount() == 0) {
         list.add(Misc.toLocal("ae2stuff.wireless.advtool.queueing.empty"))
@@ -235,7 +239,7 @@ object AdvWirelessKit
           list.add(loc.x + "," + loc.y + "," + loc.z)
         }
       }
-    } else {
+    } else if (getMode(stack) == MODE_BINDING) {
       list.add(Misc.toLocal("ae2stuff.wireless.advtool.binding"))
       if (getLocations(stack).tagCount() == 0) {
         list.add(Misc.toLocal("ae2stuff.wireless.advtool.binding.empty"))

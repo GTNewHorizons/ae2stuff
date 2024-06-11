@@ -12,9 +12,13 @@ package net.bdew.ae2stuff.misc
 import net.bdew.lib.block.BlockRef
 import net.bdew.lib.nbt.NBT
 import net.minecraft.item.{Item, ItemStack}
-import net.minecraft.nbt.NBTTagCompound
+import net.minecraft.nbt.{NBTBase, NBTTagCompound}
 
 trait AdvItemLocationStore extends Item {
+
+  import net.bdew.ae2stuff.items.AdvWirelessKit.MODE_QUEUING
+
+  private val COMPOUND_TAG = NBTBase.NBTTypes.indexOf("COMPOUND")
 
   def addLocation(stack: ItemStack, loc: BlockRef, dimension: Int): Boolean = {
     if (!stack.hasTagCompound) stack.setTagCompound(new NBTTagCompound)
@@ -22,7 +26,7 @@ trait AdvItemLocationStore extends Item {
     if (tag.hasKey("dim") && tag.getInteger("dim") != dimension) {
       false
     }
-    val locList = tag.getTagList("loc", 10)
+    val locList = tag.getTagList("loc", COMPOUND_TAG)
     for (i <- 0 until locList.tagCount()) {
       val tag = locList.getCompoundTagAt(i)
       val pos = BlockRef.fromNBT(tag)
@@ -33,8 +37,6 @@ trait AdvItemLocationStore extends Item {
     locList.appendTag(NBT.from(loc.writeToNBT _))
     tag.setTag("loc", locList)
     tag.setInteger("dim", dimension)
-    print("Added location")
-    print("locations: " + locList.tagCount())
     true
   }
 
@@ -42,11 +44,11 @@ trait AdvItemLocationStore extends Item {
     if (!stack.hasTagCompound) stack.setTagCompound(new NBTTagCompound)
     val tag = stack.getTagCompound
     if (tag.hasKey("loc")) {
-      val locList = tag.getTagList("loc", 10)
+      val locList = tag.getTagList("loc", COMPOUND_TAG)
       locList
     } else {
       tag.setTag("loc", new NBTTagCompound)
-      tag.getTagList("loc", 10)
+      tag.getTagList("loc", COMPOUND_TAG)
     }
   }
 
@@ -58,7 +60,7 @@ trait AdvItemLocationStore extends Item {
         .hasKey("loc")
     ) {
       // check if list is not empty
-      val loc = stack.getTagCompound.getTagList("loc", 10)
+      val loc = stack.getTagCompound.getTagList("loc", COMPOUND_TAG)
       if (loc.tagCount() > 0) {
         return true
       }
@@ -68,7 +70,7 @@ trait AdvItemLocationStore extends Item {
 
   def getNextLocation(stack: ItemStack): BlockRef =
     BlockRef.fromNBT(
-      stack.getTagCompound.getTagList("loc", 10).getCompoundTagAt(0)
+      stack.getTagCompound.getTagList("loc", COMPOUND_TAG).getCompoundTagAt(0)
     )
 
   def getDimension(stack: ItemStack): Int =
@@ -77,7 +79,7 @@ trait AdvItemLocationStore extends Item {
   def setLocation(stack: ItemStack, loc: BlockRef, dimension: Int): Unit = {
     if (!stack.hasTagCompound) stack.setTagCompound(new NBTTagCompound)
     val tag = stack.getTagCompound
-    val locList = tag.getTagList("loc", 10)
+    val locList = tag.getTagList("loc", COMPOUND_TAG)
     locList.appendTag(NBT.from(loc.writeToNBT _))
     tag.setTag("loc", locList)
     tag.setInteger("dim", dimension)
@@ -85,7 +87,7 @@ trait AdvItemLocationStore extends Item {
 
   def popLocation(stack: ItemStack): BlockRef = {
     if (stack.hasTagCompound) {
-      val locList = stack.getTagCompound.getTagList("loc", 10)
+      val locList = stack.getTagCompound.getTagList("loc", COMPOUND_TAG)
       if (locList.tagCount() > 0) {
         val tag = locList.getCompoundTagAt(0)
         locList.removeTag(0)
@@ -107,8 +109,8 @@ trait AdvItemLocationStore extends Item {
     if (tag.hasKey("mode")) {
       tag.getInteger("mode")
     } else {
-      tag.setInteger("mode", 0)
-      0
+      tag.setInteger("mode", MODE_QUEUING)
+      MODE_QUEUING
     }
   }
 
@@ -120,8 +122,8 @@ trait AdvItemLocationStore extends Item {
       tag.setInteger("mode", (mode + 1) % 2)
       tag.getInteger("mode")
     } else {
-      tag.setInteger("mode", 0)
-      0
+      tag.setInteger("mode", MODE_QUEUING)
+      MODE_QUEUING
     }
   }
 }

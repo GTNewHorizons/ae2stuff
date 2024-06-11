@@ -131,6 +131,7 @@ object ItemWirelessKit
                         ) & ": " & e.getMessage).setColor(Color.RED)
                       )
                       tile.doUnlink()
+                      print("Failed to link wireless connector: " + e)
                   }
                 }
                 clearLocation(stack)
