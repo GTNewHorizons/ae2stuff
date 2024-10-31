@@ -47,7 +47,6 @@ object BlockWireless
       metadata: Int,
       fortune: Int
   ): util.ArrayList[ItemStack] = {
-
     val stack = new ItemStack(this)
     val te = getTE(world, x, y, z)
     if (te.color != AEColor.Transparent) {
@@ -162,15 +161,14 @@ object BlockWireless
   ): IIcon = {
     val te = getTE(worldIn, x, y, z)
     val meta = worldIn.getBlockMetadata(x, y, z)
-
-    val color = te.color.ordinal()
     if (meta > 0) {
-      icon_on.apply(color)
+      icon_on.apply(te.color.ordinal())
     } else {
-      icon_off.apply(color)
+      icon_off.apply(te.color.ordinal())
     }
   }
 
+  @SideOnly(Side.CLIENT)
   override def getIcon(side: Int, meta: Int): IIcon = {
     if (meta == 0) {
       icon_on.apply(AEColor.Transparent.ordinal())
@@ -196,7 +194,9 @@ object BlockWireless
 }
 
 class ItemBlockWireless(b: Block) extends ItemBlockTooltip(b) {
+
   setHasSubtypes(true)
+
   override def addInformation(
       stack: ItemStack,
       player: EntityPlayer,
