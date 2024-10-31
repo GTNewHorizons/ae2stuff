@@ -166,7 +166,7 @@ object BlockWireless
 
   override def getIcon(side: Int, meta: Int): IIcon = {
     if (meta == 0) {
-      icon_on.apply(16)
+      icon_on.apply(AEColor.Transparent.ordinal())
     } else {
       icon_on.apply(meta - 1)
     }
