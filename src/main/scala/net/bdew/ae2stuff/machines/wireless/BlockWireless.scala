@@ -70,6 +70,22 @@ object BlockWireless
     }
   }
 
+  override def getPickBlock(
+      target: MovingObjectPosition,
+      world: World,
+      x: Int,
+      y: Int,
+      z: Int,
+      player: EntityPlayer
+  ): ItemStack = {
+    val stack = new ItemStack(this)
+    val te = getTE(world, x, y, z)
+    if (te.color != AEColor.Transparent) {
+      stack.setItemDamage(te.color.ordinal() + 1)
+    }
+    stack
+  }
+
   override def breakBlock(
       world: World,
       x: Int,
