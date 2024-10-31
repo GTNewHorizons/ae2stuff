@@ -47,7 +47,6 @@ object BlockWireless
       metadata: Int,
       fortune: Int
   ): util.ArrayList[ItemStack] = {
-
     val stack = new ItemStack(this)
     val te = getTE(world, x, y, z)
     if (te.color != AEColor.Transparent) {
@@ -162,12 +161,10 @@ object BlockWireless
   ): IIcon = {
     val te = getTE(worldIn, x, y, z)
     val meta = worldIn.getBlockMetadata(x, y, z)
-
-    val color = te.color.ordinal()
     if (meta > 0) {
-      icon_on.apply(color)
+      icon_on.apply(te.color.ordinal())
     } else {
-      icon_off.apply(color)
+      icon_off.apply(te.color.ordinal())
     }
   }
 
