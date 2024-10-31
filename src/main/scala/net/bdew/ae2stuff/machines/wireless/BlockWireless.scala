@@ -13,29 +13,20 @@ import appeng.api.util.AEColor
 import appeng.core.AppEng
 import appeng.core.sync.GuiBridge
 import appeng.items.tools.quartz.ToolQuartzCuttingKnife
-import appeng.util.Platform
 import cpw.mods.fml.relauncher.{Side, SideOnly}
 import net.bdew.ae2stuff.misc.{BlockWrenchable, MachineMaterial}
 import net.bdew.lib.Misc
-import net.bdew.lib.block.{
-  BlockKeepData,
-  HasItemBlock,
-  HasTE,
-  ItemBlockTooltip,
-  SimpleBlock
-}
+import net.bdew.lib.block.{HasItemBlock, HasTE, ItemBlockTooltip, SimpleBlock}
 import net.minecraft.block.Block
 import net.minecraft.client.renderer.texture.IIconRegister
 import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.entity.EntityLivingBase
 import net.minecraft.entity.player.EntityPlayer
-import net.minecraft.item.{Item, ItemBlock, ItemBlockWithMetadata, ItemStack}
+import net.minecraft.item.{Item, ItemStack}
 import net.minecraft.util.IIcon
 import net.minecraft.world.{IBlockAccess, World}
-import net.minecraftforge.common.util.ForgeDirection
 
 import java.util
-import java.util.Random
 
 object BlockWireless
     extends SimpleBlock("Wireless", MachineMaterial)
@@ -47,6 +38,7 @@ object BlockWireless
     classOf[ItemBlockWireless]
 
   setHardness(1)
+
   override def getDrops(
       world: World,
       x: Int,
