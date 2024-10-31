@@ -23,7 +23,7 @@ import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.entity.EntityLivingBase
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.{Item, ItemStack}
-import net.minecraft.util.IIcon
+import net.minecraft.util.{IIcon, MovingObjectPosition}
 import net.minecraft.world.{IBlockAccess, World}
 
 import java.util
@@ -48,14 +48,10 @@ object BlockWireless
       fortune: Int
   ): util.ArrayList[ItemStack] = {
 
-    val stack = new ItemStack(Item.getItemFromBlock(this), 1, 0)
-    val te = world.getTileEntity(x, y, z)
-    if (
-      te.isInstanceOf[TileWireless] && te
-        .asInstanceOf[TileWireless]
-        .color != AEColor.Transparent
-    ) {
-      stack.setItemDamage(te.asInstanceOf[TileWireless].color.ordinal() + 1)
+    val stack = new ItemStack(this)
+    val te = getTE(world, x, y, z)
+    if (te.color != AEColor.Transparent) {
+      stack.setItemDamage(te.color.ordinal() + 1)
     }
     val drops = new util.ArrayList[ItemStack]()
     drops.add(stack)
@@ -67,7 +63,7 @@ object BlockWireless
       tab: CreativeTabs,
       list: util.List[_]
   ): Unit = {
-    for (meta <- 0 to (16)) {
+    for (meta <- 0 to 16) {
       list
         .asInstanceOf[util.List[ItemStack]]
         .add(new ItemStack(itemIn, 1, meta))
@@ -94,16 +90,16 @@ object BlockWireless
       player: EntityLivingBase,
       stack: ItemStack
   ): Unit = {
+    val te = getTE(world, x, y, z)
     if (player.isInstanceOf[EntityPlayer]) {
-      val te = getTE(world, x, y, z)
       te.placingPlayer = player.asInstanceOf[EntityPlayer]
-      if (stack != null) {
-        if (stack.hasDisplayName) {
-          te.customName = stack.getDisplayName
-        }
-        if (stack.getItemDamage > 0) {
-          te.color = AEColor.values().apply(stack.getItemDamage - 1)
-        }
+    }
+    if (stack != null) {
+      if (stack.hasDisplayName) {
+        te.customName = stack.getDisplayName
+      }
+      if (stack.getItemDamage > 0) {
+        te.color = AEColor.values().apply(stack.getItemDamage - 1)
       }
     }
   }
@@ -139,7 +135,6 @@ object BlockWireless
 
   var icon_on: List[IIcon] = null
   var icon_off: List[IIcon] = null
-  var icon_none: IIcon = null
 
   @SideOnly(Side.CLIENT)
   override def getIcon(
@@ -149,18 +144,14 @@ object BlockWireless
       z: Int,
       side: Int
   ): IIcon = {
-    val te = worldIn.getTileEntity(x, y, z)
+    val te = getTE(worldIn, x, y, z)
     val meta = worldIn.getBlockMetadata(x, y, z)
 
-    if (te.isInstanceOf[TileWireless]) {
-      val color = te.asInstanceOf[TileWireless].color.ordinal()
-      if (meta > 0) {
-        icon_on.apply(color)
-      } else {
-        icon_off.apply(color)
-      }
+    val color = te.color.ordinal()
+    if (meta > 0) {
+      icon_on.apply(color)
     } else {
-      icon_none
+      icon_off.apply(color)
     }
   }
 
@@ -185,7 +176,6 @@ object BlockWireless
         reg.registerIcon(Misc.iconName(modId, name, "side_off" + index))
       )
       .toList
-    icon_none = reg.registerIcon(Misc.iconName(modId, name, "side_off"))
   }
 }
 
