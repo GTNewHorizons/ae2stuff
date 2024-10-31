@@ -17,23 +17,70 @@ import appeng.util.Platform
 import cpw.mods.fml.relauncher.{Side, SideOnly}
 import net.bdew.ae2stuff.misc.{BlockWrenchable, MachineMaterial}
 import net.bdew.lib.Misc
-import net.bdew.lib.block.{HasTE, SimpleBlock}
+import net.bdew.lib.block.{
+  BlockKeepData,
+  HasItemBlock,
+  HasTE,
+  ItemBlockTooltip,
+  SimpleBlock
+}
 import net.minecraft.block.Block
 import net.minecraft.client.renderer.texture.IIconRegister
+import net.minecraft.creativetab.CreativeTabs
 import net.minecraft.entity.EntityLivingBase
 import net.minecraft.entity.player.EntityPlayer
-import net.minecraft.item.ItemStack
+import net.minecraft.item.{Item, ItemBlock, ItemBlockWithMetadata, ItemStack}
 import net.minecraft.util.IIcon
 import net.minecraft.world.{IBlockAccess, World}
 import net.minecraftforge.common.util.ForgeDirection
 
+import java.util
+import java.util.Random
+
 object BlockWireless
     extends SimpleBlock("Wireless", MachineMaterial)
     with HasTE[TileWireless]
-    with BlockWrenchable {
+    with BlockWrenchable
+    with HasItemBlock {
   override val TEClass = classOf[TileWireless]
+  override val ItemBlockClass: Class[_ <: ItemBlockWireless] =
+    classOf[ItemBlockWireless]
 
   setHardness(1)
+  override def getDrops(
+      world: World,
+      x: Int,
+      y: Int,
+      z: Int,
+      metadata: Int,
+      fortune: Int
+  ): util.ArrayList[ItemStack] = {
+
+    val stack = new ItemStack(Item.getItemFromBlock(this), 1, 0)
+    val te = world.getTileEntity(x, y, z)
+    if (
+      te.isInstanceOf[TileWireless] && te
+        .asInstanceOf[TileWireless]
+        .color != AEColor.Transparent
+    ) {
+      stack.setItemDamage(te.asInstanceOf[TileWireless].color.ordinal() + 1)
+    }
+    val drops = new util.ArrayList[ItemStack]()
+    drops.add(stack)
+    drops
+  }
+
+  override def getSubBlocks(
+      itemIn: Item,
+      tab: CreativeTabs,
+      list: util.List[_]
+  ): Unit = {
+    for (meta <- 0 to (16)) {
+      list
+        .asInstanceOf[util.List[ItemStack]]
+        .add(new ItemStack(itemIn, 1, meta))
+    }
+  }
 
   override def breakBlock(
       world: World,
@@ -58,8 +105,13 @@ object BlockWireless
     if (player.isInstanceOf[EntityPlayer]) {
       val te = getTE(world, x, y, z)
       te.placingPlayer = player.asInstanceOf[EntityPlayer]
-      if (stack != null && stack.hasDisplayName) {
-        te.customName = stack.getDisplayName
+      if (stack != null) {
+        if (stack.hasDisplayName) {
+          te.customName = stack.getDisplayName
+        }
+        if (stack.getItemDamage > 0) {
+          te.color = AEColor.values().apply(stack.getItemDamage - 1)
+        }
       }
     }
   }
@@ -94,7 +146,8 @@ object BlockWireless
   }
 
   var icon_on: List[IIcon] = null
-  var icon_off: IIcon = null
+  var icon_off: List[IIcon] = null
+  var icon_none: IIcon = null
 
   @SideOnly(Side.CLIENT)
   override def getIcon(
@@ -108,16 +161,23 @@ object BlockWireless
     val meta = worldIn.getBlockMetadata(x, y, z)
 
     if (te.isInstanceOf[TileWireless]) {
+      val color = te.asInstanceOf[TileWireless].color.ordinal()
       if (meta > 0) {
-        val color = te.asInstanceOf[TileWireless].color.ordinal()
-        return icon_on.apply(color)
+        icon_on.apply(color)
+      } else {
+        icon_off.apply(color)
       }
+    } else {
+      icon_none
     }
-    icon_off
   }
 
   override def getIcon(side: Int, meta: Int): IIcon = {
-    icon_on.apply(AEColor.Transparent.ordinal())
+    if (meta == 0) {
+      icon_on.apply(16)
+    } else {
+      icon_on.apply(meta - 1)
+    }
   }
 
   @SideOnly(Side.CLIENT)
@@ -128,6 +188,32 @@ object BlockWireless
         reg.registerIcon(Misc.iconName(modId, name, "side_on" + index))
       )
       .toList
-    icon_off = reg.registerIcon(Misc.iconName(modId, name, "side_off"))
+    icon_off = index
+      .map(index =>
+        reg.registerIcon(Misc.iconName(modId, name, "side_off" + index))
+      )
+      .toList
+    icon_none = reg.registerIcon(Misc.iconName(modId, name, "side_off"))
+  }
+}
+
+class ItemBlockWireless(b: Block) extends ItemBlockTooltip(b) {
+  setHasSubtypes(true)
+  override def addInformation(
+      stack: ItemStack,
+      player: EntityPlayer,
+      list: util.List[_],
+      advanced: Boolean
+  ): Unit = {
+    super.addInformation(stack, player, list, advanced)
+    if (stack.getItemDamage > 0) {
+      list
+        .asInstanceOf[util.List[String]]
+        .add(
+          Misc.toLocal(
+            AEColor.values().apply(stack.getItemDamage - 1).unlocalizedName
+          )
+        )
+    }
   }
 }
