@@ -54,7 +54,7 @@ class VisualisationData(var nodes: Seq[VNode], var links: Seq[VLink])
       links = for (x <- 0 until linkCount) yield {
         val n1 = in.readInt()
         val n2 = in.readInt()
-        val c = in.readByte()
+        val c = in.readShort()
         val f = in.readByte()
         VLink(
           nodes(n1),
@@ -82,7 +82,7 @@ class VisualisationData(var nodes: Seq[VNode], var links: Seq[VLink])
     for (l <- links) {
       out.writeInt(nodeMap(l.node1))
       out.writeInt(nodeMap(l.node2))
-      out.writeByte(l.channels)
+      out.writeShort(l.channels)
       out.writeByte(l.flags.toBitMask(0).toByte)
     }
   }
