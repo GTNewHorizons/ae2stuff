@@ -151,7 +151,7 @@ object ItemVisualiser extends SimpleItem("Visualiser") with ItemLocationStore {
               .b()
               .hasFlag(GridFlags.CANNOT_CARRY_COMPRESSED)
           ) flags += VLinkFlags.COMPRESSED
-          VLink(n1, n2, c.getUsedChannels.toByte, flags)
+          VLink(n1, n2, c.getUsedChannels.toShort, flags)
         }
 
         NetHandler.sendTo(
