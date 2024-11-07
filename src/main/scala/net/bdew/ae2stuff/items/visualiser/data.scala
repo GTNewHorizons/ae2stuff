@@ -26,7 +26,7 @@ case class VNode(x: Int, y: Int, z: Int, flags: VNodeFlags.ValueSet)
 case class VLink(
     node1: VNode,
     node2: VNode,
-    channels: Byte,
+    channels: Short,
     flags: VLinkFlags.ValueSet
 )
 
