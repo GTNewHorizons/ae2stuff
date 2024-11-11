@@ -161,6 +161,7 @@ class TileWireless
     if (connection != null)
       connection.destroy()
     connection = null
+    setIdlePowerUse(0d)
     getLink foreach { other =>
       if (other.isHub) {
         toHub = false
@@ -192,7 +193,6 @@ class TileWireless
           )
       }
     }
-    setIdlePowerUse(0d)
     if (worldObj.blockExists(xCoord, yCoord, zCoord))
       worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, 0, 3)
   }
