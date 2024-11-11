@@ -49,7 +49,9 @@ object BlockWireless
   ): util.ArrayList[ItemStack] = {
     val stack = new ItemStack(this)
     val te = getTE(world, x, y, z)
-    if (te.color != AEColor.Transparent) {
+    if (te.isHub) {
+      stack.setItemDamage(17)
+    } else if (te.color != AEColor.Transparent) {
       stack.setItemDamage(te.color.ordinal() + 1)
     }
     val drops = new util.ArrayList[ItemStack]()
@@ -62,7 +64,7 @@ object BlockWireless
       tab: CreativeTabs,
       list: util.List[_]
   ): Unit = {
-    for (meta <- 0 to 16) {
+    for (meta <- 0 to 17) {
       list
         .asInstanceOf[util.List[ItemStack]]
         .add(new ItemStack(itemIn, 1, meta))
@@ -79,7 +81,9 @@ object BlockWireless
   ): ItemStack = {
     val stack = new ItemStack(this)
     val te = getTE(world, x, y, z)
-    if (te.color != AEColor.Transparent) {
+    if (te.isHub) {
+      stack.setItemDamage(17)
+    } else if (te.color != AEColor.Transparent) {
       stack.setItemDamage(te.color.ordinal() + 1)
     }
     stack
@@ -110,11 +114,14 @@ object BlockWireless
       te.placingPlayer = player.asInstanceOf[EntityPlayer]
     }
     if (stack != null) {
+      val itemDamage = stack.getItemDamage
       if (stack.hasDisplayName) {
         te.customName = stack.getDisplayName
       }
-      if (stack.getItemDamage > 0) {
-        te.color = AEColor.values().apply(stack.getItemDamage - 1)
+      if (itemDamage == 17) {
+        te.isHub = true;
+      } else if (itemDamage > 0) {
+        te.color = AEColor.values().apply(itemDamage - 1)
       }
     }
   }
@@ -204,12 +211,19 @@ class ItemBlockWireless(b: Block) extends ItemBlockTooltip(b) {
       advanced: Boolean
   ): Unit = {
     super.addInformation(stack, player, list, advanced)
-    if (stack.getItemDamage > 0) {
+    val itemDamage = stack.getItemDamage
+    if (itemDamage == 17) {
+      list
+        .asInstanceOf[util.List[String]]
+        .add(
+          Misc.toLocal("tile.ae2stuff.WirelessHub.name")
+        )
+    } else if (itemDamage > 0) {
       list
         .asInstanceOf[util.List[String]]
         .add(
           Misc.toLocal(
-            AEColor.values().apply(stack.getItemDamage - 1).unlocalizedName
+            AEColor.values().apply(itemDamage - 1).unlocalizedName
           )
         )
     }

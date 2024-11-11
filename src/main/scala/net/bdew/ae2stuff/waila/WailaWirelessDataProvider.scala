@@ -49,6 +49,15 @@ object WailaWirelessDataProvider
         data.setString("name", te.customName)
       }
       tag.setTag("wireless_waila", data)
+    } else if (te.isHub) {
+      val data = NBT(
+        "channels" -> te.getHubChannels,
+        "color" -> te.color.ordinal()
+      )
+      if (te.hasCustomName) {
+        data.setString("name", te.customName)
+      }
+      tag.setTag("wirelesshub_waila", data)
     } else {
       val data = NBT(
         "connected" -> false,
@@ -101,6 +110,23 @@ object WailaWirelessDataProvider
             Misc.toLocal(AEColor.values().apply(color).unlocalizedName) :: Nil
           } else Nil)
       }
+    } else if (acc.getNBTData.hasKey("wirelesshub_waila")) {
+      val data = acc.getNBTData.getCompoundTag("wirelesshub_waila")
+      val name = if (data.hasKey("name")) data.getString("name") else null
+      val color = data.getInteger("color")
+      List(
+        Misc.toLocalF("tile.ae2stuff.WirelessHub.name"),
+        Misc.toLocalF(
+          "ae2stuff.waila.wireless.channels",
+          data.getInteger("channels")
+        )
+      )
+        .++(if (name != null) {
+          Misc.toLocalF("ae2stuff.waila.wireless.name", name) :: Nil
+        } else Nil)
+        .++(if (color != AEColor.Transparent.ordinal()) {
+          Misc.toLocal(AEColor.values().apply(color).unlocalizedName) :: Nil
+        } else Nil)
     } else List.empty
   }
 }

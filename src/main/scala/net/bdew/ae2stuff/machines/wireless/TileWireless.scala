@@ -21,7 +21,6 @@ import net.bdew.ae2stuff.grid.{GridTile, VariableIdlePower}
 import net.bdew.lib.block.BlockRef
 import net.bdew.lib.data.base.{TileDataSlots, UpdateKind}
 import net.bdew.lib.multiblock.data.DataSlotPos
-import net.bdew.lib.nbt.NBT
 import net.minecraft.block.Block
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.ItemStack
@@ -47,6 +46,9 @@ class TileWireless
 
   var customName: String = null
   var color: AEColor = AEColor.Transparent
+  var isHub = false
+  var toHub = false
+  var connectionsList = Array[TileWireless]()
   def isLinked = link.isDefined
   def getLink = link flatMap (_.getTile[TileWireless](worldObj))
 
@@ -56,6 +58,11 @@ class TileWireless
     if (connection == null && link.isDefined) {
       try {
         setupConnection()
+        if (toHub) {
+          getLink foreach { other =>
+            other.connectionsList = other.connectionsList :+ this
+          }
+        }
       } catch {
         case t: Throwable =>
           AE2Stuff.logWarnException(
@@ -71,19 +78,38 @@ class TileWireless
   })
 
   def doLink(other: TileWireless): Boolean = {
-    if (other.link.isEmpty) {
+    if (other.link.isEmpty && !(isHub || other.isHub)) {
       other.link.set(myPos)
       this.customName = other.customName
       link.set(other.myPos)
       setupConnection()
+      true
+    } else if (isHub) {
+      other.toHub = true
+      other.link.set(myPos)
+      other.customName = this.customName
+      other.setupConnection()
+      true
+    } else if (other.isHub) {
+      toHub = true
+      link.set(other.myPos)
+      customName = other.customName
+      setupConnection()
+      true
     } else false
   }
 
   def doUnlink(): Unit = {
-    breakConnection()
-    getLink foreach { that =>
-      this.link := None
-      that.link := None
+    if (isHub) {
+      connectionsList foreach { that =>
+        that.doUnlink()
+      }
+    } else {
+      breakConnection()
+      getLink foreach { that =>
+        this.link := None
+        that.link := None
+      }
     }
   }
 
@@ -91,7 +117,7 @@ class TileWireless
     getLink foreach { that =>
       connection =
         AEApi.instance().createGridConnection(this.getNode, that.getNode)
-      that.connection = connection
+      if (!that.isHub) that.connection = connection
       val dx = this.xCoord - that.xCoord
       val dy = this.yCoord - that.yCoord
       val dz = this.zCoord - that.zCoord
@@ -101,7 +127,7 @@ class TileWireless
         dist * dist + 3
       )
       this.setIdlePowerUse(power)
-      that.setIdlePowerUse(power)
+      if (!that.isHub) that.setIdlePowerUse(power)
       if (worldObj.blockExists(xCoord, yCoord, zCoord))
         worldObj.setBlockMetadataWithNotify(
           this.xCoord,
@@ -123,23 +149,50 @@ class TileWireless
     false
   }
 
+  def getHubChannels: Int = {
+    var channels = 0
+    connectionsList foreach { that =>
+      channels += that.connection.getUsedChannels
+    }
+    channels
+  }
+
   def breakConnection(): Unit = {
     if (connection != null)
       connection.destroy()
     connection = null
-    setIdlePowerUse(0d)
     getLink foreach { other =>
-      other.connection = null
-      other.setIdlePowerUse(0d)
-      if (worldObj.blockExists(other.xCoord, other.yCoord, other.zCoord))
-        worldObj.setBlockMetadataWithNotify(
-          other.xCoord,
-          other.yCoord,
-          other.zCoord,
-          0,
-          3
+      if (other.isHub) {
+        toHub = false
+        other.connectionsList = other.connectionsList.filterNot(_ == this)
+        if (
+          other.connectionsList.isEmpty && worldObj.blockExists(
+            other.xCoord,
+            other.yCoord,
+            other.zCoord
+          )
         )
+          worldObj.setBlockMetadataWithNotify(
+            other.xCoord,
+            other.yCoord,
+            other.zCoord,
+            0,
+            3
+          )
+      } else {
+        other.connection = null
+        other.setIdlePowerUse(0d)
+        if (worldObj.blockExists(other.xCoord, other.yCoord, other.zCoord))
+          worldObj.setBlockMetadataWithNotify(
+            other.xCoord,
+            other.yCoord,
+            other.zCoord,
+            0,
+            3
+          )
+      }
     }
+    setIdlePowerUse(0d)
     if (worldObj.blockExists(xCoord, yCoord, zCoord))
       worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, 0, 3)
   }
@@ -166,6 +219,8 @@ class TileWireless
       t.setString("CustomName", customName)
     }
     t.setShort("Color", color.ordinal().toShort)
+    t.setBoolean("isHub", isHub)
+    t.setBoolean("toHub", toHub)
   }
 
   override def doLoad(kind: UpdateKind.Value, t: NBTTagCompound): Unit = {
@@ -176,7 +231,15 @@ class TileWireless
     if (!t.hasKey("Color")) {
       t.setShort("Color", AEColor.Transparent.ordinal().toShort)
     }
+    if (!t.hasKey("isHub")) {
+      t.setBoolean("isHub", isHub)
+    }
+    if (!t.hasKey("toHub")) {
+      t.setBoolean("toHub", toHub)
+    }
     val colorIdx = t.getShort("Color").toInt
+    this.isHub = t.getBoolean("isHub")
+    this.toHub = t.getBoolean("toHub")
     this.color = AEColor.values().apply(colorIdx)
     if (hasWorldObj) {
       worldObj.markBlockRangeForRenderUpdate(
