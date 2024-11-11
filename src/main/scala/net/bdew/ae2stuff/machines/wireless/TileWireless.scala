@@ -47,7 +47,6 @@ class TileWireless
   var customName: String = null
   var color: AEColor = AEColor.Transparent
   var isHub = false
-  var toHub = false
   var connectionsList = Array[TileWireless]()
   def isLinked = link.isDefined
   def getLink = link flatMap (_.getTile[TileWireless](worldObj))
@@ -58,11 +57,6 @@ class TileWireless
     if (connection == null && link.isDefined) {
       try {
         setupConnection()
-        if (toHub) {
-          getLink foreach { other =>
-            other.connectionsList = other.connectionsList :+ this
-          }
-        }
       } catch {
         case t: Throwable =>
           AE2Stuff.logWarnException(
@@ -85,13 +79,11 @@ class TileWireless
       setupConnection()
       true
     } else if (isHub) {
-      other.toHub = true
       other.link.set(myPos)
       other.customName = this.customName
       other.setupConnection()
       true
     } else if (other.isHub) {
-      toHub = true
       link.set(other.myPos)
       customName = other.customName
       setupConnection()
@@ -117,7 +109,11 @@ class TileWireless
     getLink foreach { that =>
       connection =
         AEApi.instance().createGridConnection(this.getNode, that.getNode)
-      if (!that.isHub) that.connection = connection
+      if (that.isHub) {
+        that.connectionsList = that.connectionsList :+ this
+      } else {
+        that.connection = connection
+      }
       val dx = this.xCoord - that.xCoord
       val dy = this.yCoord - that.yCoord
       val dz = this.zCoord - that.zCoord
@@ -164,7 +160,6 @@ class TileWireless
     setIdlePowerUse(0d)
     getLink foreach { other =>
       if (other.isHub) {
-        toHub = false
         other.connectionsList = other.connectionsList.filterNot(_ == this)
         if (
           other.connectionsList.isEmpty && worldObj.blockExists(
@@ -220,7 +215,6 @@ class TileWireless
     }
     t.setShort("Color", color.ordinal().toShort)
     t.setBoolean("isHub", isHub)
-    t.setBoolean("toHub", toHub)
   }
 
   override def doLoad(kind: UpdateKind.Value, t: NBTTagCompound): Unit = {
@@ -234,12 +228,8 @@ class TileWireless
     if (!t.hasKey("isHub")) {
       t.setBoolean("isHub", isHub)
     }
-    if (!t.hasKey("toHub")) {
-      t.setBoolean("toHub", toHub)
-    }
     val colorIdx = t.getShort("Color").toInt
     this.isHub = t.getBoolean("isHub")
-    this.toHub = t.getBoolean("toHub")
     this.color = AEColor.values().apply(colorIdx)
     if (hasWorldObj) {
       worldObj.markBlockRangeForRenderUpdate(
