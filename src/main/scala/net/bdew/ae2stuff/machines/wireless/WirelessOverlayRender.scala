@@ -17,7 +17,12 @@ import net.minecraft.util.MovingObjectPosition
 import org.lwjgl.opengl.GL11
 
 object WirelessOverlayRender extends WorldOverlayRenderer {
-  override def doRender(partialTicks: Float): Unit = {
+  override def doRender(
+      partialTicks: Float,
+      viewX: Double,
+      viewY: Double,
+      viewZ: Double
+  ): Unit = {
     val mop = Client.minecraft.objectMouseOver
     if (
       mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK

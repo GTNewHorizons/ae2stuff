@@ -231,7 +231,12 @@ object VisualiserOverlayRender extends WorldOverlayRenderer {
     VisualisationModes.P2P
   )
 
-  override def doRender(partialTicks: Float): Unit = {
+  override def doRender(
+      partialTicks: Float,
+      viewX: Double,
+      viewY: Double,
+      viewZ: Double
+  ): Unit = {
     val stack = Client.player.inventory.getCurrentItem
     if (
       !(stack != null && stack.getItem == ItemVisualiser && stack.hasTagCompound) || !stack.getTagCompound
@@ -277,13 +282,20 @@ object VisualiserOverlayRender extends WorldOverlayRenderer {
 
     if (mode == VisualisationModes.FULL) {
       for (link <- currentLinks.links if link.channels > 0) {
-        OverlayRenderHandler.renderFloatingText(
-          link.channels.toString,
-          (link.node1.x + link.node2.x) / 2d + 0.5d,
-          (link.node1.y + link.node2.y) / 2d + 0.5d,
-          (link.node1.z + link.node2.z) / 2d + 0.5d,
-          0xffffff
-        )
+        val linkX = (link.node1.x + link.node2.x) / 2d + 0.5d
+        val linkY = (link.node1.y + link.node2.y) / 2d + 0.5d
+        val linkZ = (link.node1.z + link.node2.z) / 2d + 0.5d
+        val distSq =
+          (viewX - linkX) * (viewX - linkX) + (viewY - linkY) * (viewY - linkY) + (viewZ - linkZ) * (viewZ - linkZ)
+        if (distSq < 256d) { // 16 blocks
+          OverlayRenderHandler.renderFloatingText(
+            link.channels.toString,
+            linkX,
+            linkY,
+            linkZ,
+            0xffffff
+          )
+        }
       }
     }
 
