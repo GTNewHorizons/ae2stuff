@@ -1,11 +1,11 @@
 // Add your dependencies here
 
 dependencies {
-    api('com.github.GTNewHorizons:Applied-Energistics-2-Unofficial:rv3-beta-473-GTNH:dev')
+    api('com.github.GTNewHorizons:Applied-Energistics-2-Unofficial:rv3-beta-478-GTNH:dev')
     api('com.github.GTNewHorizons:bdlib:1.10.0-GTNH:dev')
 
-    implementation('com.github.GTNewHorizons:waila:1.8.1:dev') {transitive=false}
-    compileOnly('com.github.GTNewHorizons:NotEnoughItems:2.6.44-GTNH:dev')
+    implementation('com.github.GTNewHorizons:waila:1.8.2:dev') {transitive=false}
+    compileOnly('com.github.GTNewHorizons:NotEnoughItems:2.6.46-GTNH:dev')
     compileOnly('com.github.GTNewHorizons:BuildCraft:7.1.39:dev')
-    runtimeOnlyNonPublishable("com.github.GTNewHorizons:GTNHLib:0.5.19:dev")
+    runtimeOnlyNonPublishable("com.github.GTNewHorizons:GTNHLib:0.5.20:dev")
 }
