@@ -12,6 +12,7 @@ package net.bdew.ae2stuff.misc
 import cpw.mods.fml.common.eventhandler.SubscribeEvent
 import net.bdew.ae2stuff.AE2Stuff
 import net.bdew.lib.Client
+import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.Tessellator
 import net.minecraft.client.renderer.entity.RenderManager
 import net.minecraftforge.client.event.RenderWorldLastEvent
@@ -19,7 +20,12 @@ import net.minecraftforge.common.MinecraftForge
 import org.lwjgl.opengl.GL11
 
 trait WorldOverlayRenderer {
-  def doRender(partialTicks: Float): Unit
+  def doRender(
+      partialTicks: Float,
+      viewX: Double,
+      viewY: Double,
+      viewZ: Double
+  ): Unit
 }
 
 object OverlayRenderHandler {
@@ -30,17 +36,17 @@ object OverlayRenderHandler {
 
   @SubscribeEvent
   def onRenderWorldLastEvent(ev: RenderWorldLastEvent): Unit = {
-    val p = Client.player
-    val dx = p.lastTickPosX + (p.posX - p.lastTickPosX) * ev.partialTicks
-    val dy = p.lastTickPosY + (p.posY - p.lastTickPosY) * ev.partialTicks
-    val dz = p.lastTickPosZ + (p.posZ - p.lastTickPosZ) * ev.partialTicks
+    val p = Minecraft.getMinecraft.renderViewEntity
+    val viewX = p.lastTickPosX + (p.posX - p.lastTickPosX) * ev.partialTicks
+    val viewY = p.lastTickPosY + (p.posY - p.lastTickPosY) * ev.partialTicks
+    val viewZ = p.lastTickPosZ + (p.posZ - p.lastTickPosZ) * ev.partialTicks
 
     GL11.glPushMatrix()
-    GL11.glTranslated(-dx, -dy, -dz)
+    GL11.glTranslated(-viewX, -viewY, -viewZ)
 
     for (renderer <- renderers) {
       try {
-        renderer.doRender(ev.partialTicks)
+        renderer.doRender(ev.partialTicks, viewX, viewY, viewZ)
       } catch {
         case t: Throwable =>
           AE2Stuff.logErrorException(
@@ -83,7 +89,8 @@ object OverlayRenderHandler {
 
     GL11.glDisable(GL11.GL_TEXTURE_2D)
     tessellator.startDrawingQuads()
-    val stringMiddle = fontRenderer.getStringWidth(text) / 2
+    val textWidth = fontRenderer.getStringWidth(text)
+    val stringMiddle = textWidth / 2
     tessellator.setColorRGBA_F(0.0f, 0.0f, 0.0f, 0.5f)
     tessellator.addVertex(-stringMiddle - 1, -1 + yOffset, 0.0d)
     tessellator.addVertex(-stringMiddle - 1, 8 + yOffset, 0.0d)
@@ -94,7 +101,7 @@ object OverlayRenderHandler {
     GL11.glColor4f(1f, 1f, 1f, 0.5f)
     fontRenderer.drawString(
       text,
-      -fontRenderer.getStringWidth(text) / 2,
+      -textWidth / 2,
       yOffset,
       color
     )
@@ -102,7 +109,7 @@ object OverlayRenderHandler {
     GL11.glDepthMask(true)
     fontRenderer.drawString(
       text,
-      -fontRenderer.getStringWidth(text) / 2,
+      -textWidth / 2,
       yOffset,
       color
     )
