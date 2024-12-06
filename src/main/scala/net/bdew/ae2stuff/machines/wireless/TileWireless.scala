@@ -48,6 +48,7 @@ class TileWireless
   var color: AEColor = AEColor.Transparent
   var isHub = false
   var connectionsList = Array[TileWireless]()
+  var hubPowerUsage = 0d;
   def isLinked = link.isDefined
   def getLink = link flatMap (_.getTile[TileWireless](worldObj))
 
@@ -123,7 +124,11 @@ class TileWireless
         dist * dist + 3
       )
       this.setIdlePowerUse(power)
-      if (!that.isHub) that.setIdlePowerUse(power)
+      if (!that.isHub) {
+        that.setIdlePowerUse(power)
+      } else {
+        that.setHubPowerUse(power)
+      }
       if (worldObj.blockExists(xCoord, yCoord, zCoord))
         worldObj.setBlockMetadataWithNotify(
           this.xCoord,
@@ -145,6 +150,11 @@ class TileWireless
     false
   }
 
+  def setHubPowerUse(power: Double): Unit = {
+    hubPowerUsage += power
+    this.setIdlePowerUse(hubPowerUsage)
+  }
+
   def getHubChannels: Int = {
     var channels = 0
     connectionsList foreach { that =>
@@ -157,10 +167,10 @@ class TileWireless
     if (connection != null)
       connection.destroy()
     connection = null
-    setIdlePowerUse(0d)
     getLink foreach { other =>
       if (other.isHub) {
         other.connectionsList = other.connectionsList.filterNot(_ == this)
+        other.setHubPowerUse(-getIdlePowerUsage)
         if (
           other.connectionsList.isEmpty && worldObj.blockExists(
             other.xCoord,
@@ -188,6 +198,7 @@ class TileWireless
           )
       }
     }
+    setIdlePowerUse(0d)
     if (worldObj.blockExists(xCoord, yCoord, zCoord))
       worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, 0, 3)
   }

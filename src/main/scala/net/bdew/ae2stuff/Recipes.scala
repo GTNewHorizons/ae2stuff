@@ -83,6 +83,18 @@ object Recipes {
     )
     GameRegistry.addShapelessRecipe(
       new ItemStack(BlockWireless, 1, 17),
+      new ItemStack(BlockWireless),
+      new ItemStack(BlockWireless),
+      new ItemStack(BlockWireless),
+      new ItemStack(BlockWireless),
+      new ItemStack(BlockWireless),
+      new ItemStack(BlockWireless),
+      new ItemStack(BlockWireless),
+      new ItemStack(BlockWireless),
+      new ItemStack(BlockWireless)
+    )
+    GameRegistry.addShapelessRecipe(
+      new ItemStack(BlockWireless, 1, 17),
       new ItemStack(BlockWireless, 1, 18)
     )
     GameRegistry.addShapelessRecipe(

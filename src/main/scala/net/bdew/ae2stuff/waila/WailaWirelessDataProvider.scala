@@ -52,7 +52,8 @@ object WailaWirelessDataProvider
     } else if (te.isHub) {
       val data = NBT(
         "channels" -> te.getHubChannels,
-        "color" -> te.color.ordinal()
+        "color" -> te.color.ordinal(),
+        "power" -> te.getIdlePowerUsage
       )
       if (te.hasCustomName) {
         data.setString("name", te.customName)
@@ -119,7 +120,8 @@ object WailaWirelessDataProvider
         Misc.toLocalF(
           "ae2stuff.waila.wireless.channels",
           data.getInteger("channels")
-        )
+        ),
+        Misc.toLocalF("ae2stuff.waila.wireless.power", DecFormat.short(data.getDouble("power")))
       )
         .++(if (name != null) {
           Misc.toLocalF("ae2stuff.waila.wireless.name", name) :: Nil
