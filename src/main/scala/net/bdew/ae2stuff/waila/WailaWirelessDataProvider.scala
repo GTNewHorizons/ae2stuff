@@ -121,7 +121,10 @@ object WailaWirelessDataProvider
           "ae2stuff.waila.wireless.channels",
           data.getInteger("channels")
         ),
-        Misc.toLocalF("ae2stuff.waila.wireless.power", DecFormat.short(data.getDouble("power")))
+        Misc.toLocalF(
+          "ae2stuff.waila.wireless.power",
+          DecFormat.short(data.getDouble("power"))
+        )
       )
         .++(if (name != null) {
           Misc.toLocalF("ae2stuff.waila.wireless.name", name) :: Nil
