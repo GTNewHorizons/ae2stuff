@@ -39,6 +39,8 @@ object BlockWireless
 
   setHardness(1)
 
+  var isHub = false;
+
   override def getDrops(
       world: World,
       x: Int,
@@ -49,6 +51,9 @@ object BlockWireless
   ): util.ArrayList[ItemStack] = {
     val stack = new ItemStack(this)
     val te = getTE(world, x, y, z)
+    if (isHub) {
+      stack.setItemDamage(17);
+    }
     if (te.isHub) {
       if (te.color != AEColor.Transparent) {
         stack.setItemDamage(te.color.ordinal() + 18)
@@ -105,7 +110,9 @@ object BlockWireless
       block: Block,
       meta: Int
   ): Unit = {
-    getTE(world, x, y, z).doUnlink()
+    val te = getTE(world, x, y, z);
+    te.doUnlink()
+    isHub = te.isHub;
     super.breakBlock(world, x, y, z, block, meta)
   }
 
