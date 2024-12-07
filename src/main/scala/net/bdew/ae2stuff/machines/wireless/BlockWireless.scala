@@ -39,6 +39,8 @@ object BlockWireless
 
   setHardness(1)
 
+  private var tempColor: AEColor = AEColor.Transparent
+
   override def getDrops(
       world: World,
       x: Int,
@@ -48,9 +50,8 @@ object BlockWireless
       fortune: Int
   ): util.ArrayList[ItemStack] = {
     val stack = new ItemStack(this)
-    val te = getTE(world, x, y, z)
-    if (te.color != AEColor.Transparent) {
-      stack.setItemDamage(te.color.ordinal() + 1)
+    if (tempColor != AEColor.Transparent) {
+      stack.setItemDamage(tempColor.ordinal() + 1)
     }
     val drops = new util.ArrayList[ItemStack]()
     drops.add(stack)
@@ -93,7 +94,9 @@ object BlockWireless
       block: Block,
       meta: Int
   ): Unit = {
-    getTE(world, x, y, z).doUnlink()
+    val te = getTE(world, x, y, z);
+    te.doUnlink()
+    tempColor = te.color
     super.breakBlock(world, x, y, z, block, meta)
   }
 
