@@ -53,7 +53,7 @@ object WailaWirelessDataProvider
       val data = NBT(
         "channels" -> te.getHubChannels,
         "color" -> te.color.ordinal(),
-        "power" -> te.getIdlePowerUsage
+        "power" -> PowerMultiplier.CONFIG.multiply(te.getIdlePowerUsage)
       )
       if (te.hasCustomName) {
         data.setString("name", te.customName)

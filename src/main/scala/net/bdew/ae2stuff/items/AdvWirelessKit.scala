@@ -116,7 +116,13 @@ object AdvWirelessKit
             L("ae2stuff.wireless.tool.security.player").setColor(Color.RED)
           )
         } else if (getMode(stack) == MODE_QUEUING) {
-          addLocation(stack, pos, world.provider.dimensionId)
+          var isHub = false;
+          val tempTE =
+            world.getTileEntity(pos.x, pos.y, pos.z).asInstanceOf[TileWireless]
+          if (tempTE != null) {
+            isHub = tempTE.isHub
+          }
+          addLocation(stack, pos, world.provider.dimensionId, isHub)
           player.addChatMessage(
             L(
               "ae2stuff.wireless.advtool.queued",
