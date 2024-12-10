@@ -122,15 +122,20 @@ object AdvWirelessKit
           if (tempTE != null) {
             isHub = tempTE.isHub
           }
-          addLocation(stack, pos, world.provider.dimensionId, isHub)
-          player.addChatMessage(
-            L(
-              "ae2stuff.wireless.advtool.queued",
-              pos.x.toString,
-              pos.y.toString,
-              pos.z.toString
-            ).setColor(Color.GREEN)
-          )
+          if (addLocation(stack, pos, world.provider.dimensionId, isHub)) {
+            player.addChatMessage(
+              L(
+                "ae2stuff.wireless.advtool.queued",
+                pos.x.toString,
+                pos.y.toString,
+                pos.z.toString
+              ).setColor(Color.GREEN)
+            )
+          } else {
+            player.addChatMessage(
+              L("ae2stuff.wireless.advtool.queuederror").setColor(Color.RED)
+            )
+          }
         } else if (getMode(stack) == MODE_BINDING) {
           if (hasLocation(stack)) {
             // Have other location - start connecting
