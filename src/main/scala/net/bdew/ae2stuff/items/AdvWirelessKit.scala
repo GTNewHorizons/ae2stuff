@@ -116,15 +116,26 @@ object AdvWirelessKit
             L("ae2stuff.wireless.tool.security.player").setColor(Color.RED)
           )
         } else if (getMode(stack) == MODE_QUEUING) {
-          addLocation(stack, pos, world.provider.dimensionId)
-          player.addChatMessage(
-            L(
-              "ae2stuff.wireless.advtool.queued",
-              pos.x.toString,
-              pos.y.toString,
-              pos.z.toString
-            ).setColor(Color.GREEN)
-          )
+          var isHub = false;
+          val tempTE =
+            world.getTileEntity(pos.x, pos.y, pos.z).asInstanceOf[TileWireless]
+          if (tempTE != null) {
+            isHub = tempTE.isHub
+          }
+          if (addLocation(stack, pos, world.provider.dimensionId, isHub)) {
+            player.addChatMessage(
+              L(
+                "ae2stuff.wireless.advtool.queued",
+                pos.x.toString,
+                pos.y.toString,
+                pos.z.toString
+              ).setColor(Color.GREEN)
+            )
+          } else {
+            player.addChatMessage(
+              L("ae2stuff.wireless.advtool.queuederror").setColor(Color.RED)
+            )
+          }
         } else if (getMode(stack) == MODE_BINDING) {
           if (hasLocation(stack)) {
             // Have other location - start connecting
@@ -155,10 +166,14 @@ object AdvWirelessKit
                         Color.RED
                       )
                     )
+                  } else if (tile.isHub && other.isHub) {
+                    player.addChatMessage(
+                      L("ae2stuff.wireless.tool.failed").setColor(Color.RED)
+                    )
                   } else {
                     // Player can modify both sides - unlink current connections if any
-                    tile.doUnlink()
-                    other.doUnlink()
+                    if (!tile.isHub) tile.doUnlink()
+                    if (!other.isHub) other.doUnlink()
 
                     // Make player the owner of both blocks
                     tile.getNode.setPlayerID(pid)
