@@ -50,18 +50,20 @@ object BlockWireless
       fortune: Int
   ): util.ArrayList[ItemStack] = {
     val stack = new ItemStack(this)
-    val te = getTE(world, x, y, z)
-    if (isHub) {
-      stack.setItemDamage(17);
-    }
-    if (te.isHub) {
-      if (te.color != AEColor.Transparent) {
-        stack.setItemDamage(te.color.ordinal() + 18)
-      } else {
-        stack.setItemDamage(17)
+    val te = world.getTileEntity(x, y, z).asInstanceOf[TileWireless]
+
+    if (te != null) {
+      if (te.isHub) {
+        if (te.color != AEColor.Transparent) {
+          stack.setItemDamage(te.color.ordinal() + 18)
+        } else {
+          stack.setItemDamage(17)
+        }
+      } else if (te.color != AEColor.Transparent) {
+        stack.setItemDamage(te.color.ordinal() + 1)
       }
-    } else if (te.color != AEColor.Transparent) {
-      stack.setItemDamage(te.color.ordinal() + 1)
+    } else if (isHub) {
+      stack.setItemDamage(17);
     }
     val drops = new util.ArrayList[ItemStack]()
     drops.add(stack)
