@@ -51,7 +51,6 @@ object BlockWireless
   ): util.ArrayList[ItemStack] = {
     val stack = new ItemStack(this)
     val te = world.getTileEntity(x, y, z).asInstanceOf[TileWireless]
-
     if (te != null) {
       if (te.isHub) {
         if (te.color != AEColor.Transparent) {
