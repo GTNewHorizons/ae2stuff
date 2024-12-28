@@ -34,7 +34,7 @@ ae2stuff.wireless.advtool.binding=§aBinding Mode
 ae2stuff.wireless.advtool.queueing.activated=Queuing mode activated
 ae2stuff.wireless.advtool.binding.activated=Binding mode activated
 ae2stuff.wireless.advtool.queued=Added connector at %s,%s,%s to queue
-ae2stuff.wireless.advtool.queuederror=Connector already in queue!
+ae2stuff.wireless.advtool.queuederror=Connector already in queue
 ae2stuff.wireless.advtool.queueing.empty=Click Wireless Connectors to add to binding queue
 ae2stuff.wireless.advtool.binding.empty=Switch to Queuing Mode to add connectors to queue
 ae2stuff.wireless.advtool.queueing.notempty=Current wireless connectors in queue:
@@ -53,7 +53,7 @@ ae2stuff.wireless.tool.failed=Connection failed
 ae2stuff.wireless.tool.dimension=Both connectors must be in the same dimension
 ae2stuff.wireless.tool.noexist=Bound connector does not exist
 ae2stuff.wireless.tool.security.player=Security violation - you are not allowed to modify this network
-ae2stuff.wireless.tool.targethubfull=Target Hub is Full!
+ae2stuff.wireless.tool.targethubfull=Target Hub is Full
 
 ae2stuff.visualiser.bound=Visualising network at %s,%s,%s
 ae2stuff.visualiser.mode=Mode:

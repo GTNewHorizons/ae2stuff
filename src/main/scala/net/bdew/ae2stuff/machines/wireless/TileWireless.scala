@@ -73,7 +73,7 @@ class TileWireless
   })
 
   def doLink(other: TileWireless): Boolean = {
-    if (other.link.isEmpty && !(isHub || other.isHub)) {
+    if (other.link.isEmpty && !isHub && !other.isHub) {
       other.link.set(myPos)
       this.customName = other.customName
       link.set(other.myPos)
