@@ -39,6 +39,8 @@ object BlockWireless
 
   setHardness(1)
 
+  var isHub = false;
+
   override def getDrops(
       world: World,
       x: Int,
@@ -49,8 +51,18 @@ object BlockWireless
   ): util.ArrayList[ItemStack] = {
     val stack = new ItemStack(this)
     val te = world.getTileEntity(x, y, z).asInstanceOf[TileWireless]
-    if (te != null && te.color != AEColor.Transparent) {
-      stack.setItemDamage(te.color.ordinal() + 1)
+    if (te != null) {
+      if (te.isHub) {
+        if (te.color != AEColor.Transparent) {
+          stack.setItemDamage(te.color.ordinal() + 18)
+        } else {
+          stack.setItemDamage(17)
+        }
+      } else if (te.color != AEColor.Transparent) {
+        stack.setItemDamage(te.color.ordinal() + 1)
+      }
+    } else if (isHub) {
+      stack.setItemDamage(17);
     }
     val drops = new util.ArrayList[ItemStack]()
     drops.add(stack)
@@ -62,7 +74,7 @@ object BlockWireless
       tab: CreativeTabs,
       list: util.List[_]
   ): Unit = {
-    for (meta <- 0 to 16) {
+    for (meta <- 0 to 33) {
       list
         .asInstanceOf[util.List[ItemStack]]
         .add(new ItemStack(itemIn, 1, meta))
@@ -79,7 +91,13 @@ object BlockWireless
   ): ItemStack = {
     val stack = new ItemStack(this)
     val te = getTE(world, x, y, z)
-    if (te.color != AEColor.Transparent) {
+    if (te.isHub) {
+      if (te.color != AEColor.Transparent) {
+        stack.setItemDamage(te.color.ordinal() + 18)
+      } else {
+        stack.setItemDamage(17)
+      }
+    } else if (te.color != AEColor.Transparent) {
       stack.setItemDamage(te.color.ordinal() + 1)
     }
     stack
@@ -93,7 +111,9 @@ object BlockWireless
       block: Block,
       meta: Int
   ): Unit = {
-    getTE(world, x, y, z).doUnlink()
+    val te = getTE(world, x, y, z);
+    te.doUnlink()
+    isHub = te.isHub;
     super.breakBlock(world, x, y, z, block, meta)
   }
 
@@ -110,11 +130,19 @@ object BlockWireless
       te.placingPlayer = player.asInstanceOf[EntityPlayer]
     }
     if (stack != null) {
+      val itemDamage = stack.getItemDamage
       if (stack.hasDisplayName) {
         te.customName = stack.getDisplayName
       }
-      if (stack.getItemDamage > 0) {
-        te.color = AEColor.values().apply(stack.getItemDamage - 1)
+      if (itemDamage > 16) {
+        te.isHub = true;
+        if (itemDamage == 17) {
+          te.color = AEColor.values().apply(16)
+        } else {
+          te.color = AEColor.values().apply(itemDamage - 18)
+        }
+      } else if (itemDamage > 0) {
+        te.color = AEColor.values().apply(itemDamage - 1)
       }
     }
   }
@@ -161,10 +189,18 @@ object BlockWireless
   ): IIcon = {
     val te = getTE(worldIn, x, y, z)
     val meta = worldIn.getBlockMetadata(x, y, z)
-    if (meta > 0) {
-      icon_on.apply(te.color.ordinal())
+    if (te.isHub) {
+      if (meta > 0) {
+        icon_on.apply(te.color.ordinal() + 17)
+      } else {
+        icon_off.apply(te.color.ordinal() + 17)
+      }
     } else {
-      icon_off.apply(te.color.ordinal())
+      if (meta > 0) {
+        icon_on.apply(te.color.ordinal())
+      } else {
+        icon_off.apply(te.color.ordinal())
+      }
     }
   }
 
@@ -172,6 +208,8 @@ object BlockWireless
   override def getIcon(side: Int, meta: Int): IIcon = {
     if (meta == 0) {
       icon_on.apply(AEColor.Transparent.ordinal())
+    } else if (meta == 17) {
+      icon_on.apply(33)
     } else {
       icon_on.apply(meta - 1)
     }
@@ -179,7 +217,7 @@ object BlockWireless
 
   @SideOnly(Side.CLIENT)
   override def registerBlockIcons(reg: IIconRegister): Unit = {
-    val index = 1.to(17)
+    val index = 1.to(34)
     icon_on = index
       .map(index =>
         reg.registerIcon(Misc.iconName(modId, name, "side_on" + index))
@@ -204,12 +242,29 @@ class ItemBlockWireless(b: Block) extends ItemBlockTooltip(b) {
       advanced: Boolean
   ): Unit = {
     super.addInformation(stack, player, list, advanced)
-    if (stack.getItemDamage > 0) {
+    val itemDamage = stack.getItemDamage
+    if (itemDamage == 17) {
+      list
+        .asInstanceOf[util.List[String]]
+        .add(Misc.toLocal("tile.ae2stuff.WirelessHub.name"))
+      list
+        .asInstanceOf[util.List[String]]
+        .add(Misc.toLocal(AEColor.values().apply(16).unlocalizedName))
+    } else if (itemDamage > 16) {
+      list
+        .asInstanceOf[util.List[String]]
+        .add(Misc.toLocal("tile.ae2stuff.WirelessHub.name"))
+      list
+        .asInstanceOf[util.List[String]]
+        .add(
+          Misc.toLocal(AEColor.values().apply(itemDamage - 18).unlocalizedName)
+        )
+    } else if (itemDamage > 0) {
       list
         .asInstanceOf[util.List[String]]
         .add(
           Misc.toLocal(
-            AEColor.values().apply(stack.getItemDamage - 1).unlocalizedName
+            AEColor.values().apply(itemDamage - 1).unlocalizedName
           )
         )
     }

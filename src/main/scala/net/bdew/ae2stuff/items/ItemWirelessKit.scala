@@ -71,6 +71,10 @@ object ItemWirelessKit
           player.addChatMessage(
             L("ae2stuff.wireless.tool.security.player").setColor(Color.RED)
           )
+        } else if (tile.isHub && tile.connectionsList.length == 32) {
+          player.addChatMessage(
+            L("ae2stuff.wireless.tool.targethubfull").setColor(Color.RED)
+          )
         } else if (hasLocation(stack)) {
           // Have other location - start connecting
           val otherPos = getLocation(stack)
@@ -100,10 +104,22 @@ object ItemWirelessKit
                       Color.RED
                     )
                   )
+                } else if (tile.isHub && other.isHub) {
+                  player.addChatMessage(
+                    L("ae2stuff.wireless.tool.failed").setColor(Color.RED)
+                  )
+                } else if (
+                  tile.connectionsList.length == 32 || other.connectionsList.length == 32
+                ) {
+                  player.addChatMessage(
+                    L("ae2stuff.wireless.tool.targethubfull").setColor(
+                      Color.RED
+                    )
+                  )
                 } else {
                   // Player can modify both sides - unlink current connections if any
-                  tile.doUnlink()
-                  other.doUnlink()
+                  if (!tile.isHub) tile.doUnlink()
+                  if (!other.isHub) other.doUnlink()
 
                   // Make player the owner of both blocks
                   tile.getNode.setPlayerID(pid)

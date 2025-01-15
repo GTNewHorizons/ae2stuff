@@ -20,7 +20,12 @@ trait AdvItemLocationStore extends Item {
 
   private val COMPOUND_TAG = NBTBase.NBTTypes.indexOf("COMPOUND")
 
-  def addLocation(stack: ItemStack, loc: BlockRef, dimension: Int): Boolean = {
+  def addLocation(
+      stack: ItemStack,
+      loc: BlockRef,
+      dimension: Int,
+      isHub: Boolean
+  ): Boolean = {
     if (!stack.hasTagCompound) stack.setTagCompound(new NBTTagCompound)
     val tag = stack.getTagCompound
     if (tag.hasKey("dim") && tag.getInteger("dim") != dimension) {
@@ -30,7 +35,7 @@ trait AdvItemLocationStore extends Item {
     for (i <- 0 until locList.tagCount()) {
       val tag = locList.getCompoundTagAt(i)
       val pos = BlockRef.fromNBT(tag)
-      if (pos == loc) {
+      if (pos == loc && !isHub) {
         return false
       }
     }
