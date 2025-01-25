@@ -9,8 +9,9 @@
 
 package net.bdew.ae2stuff
 
-import java.io.File
+import com.gtnewhorizon.gtnhlib.keybind.SyncedKeybind
 
+import java.io.File
 import cpw.mods.fml.common.Mod
 import cpw.mods.fml.common.Mod.EventHandler
 import cpw.mods.fml.common.event._
@@ -27,13 +28,14 @@ import net.bdew.ae2stuff.network.NetHandler
 import net.bdew.lib.Event
 import net.bdew.lib.gui.GuiHandler
 import org.apache.logging.log4j.Logger
+import org.lwjgl.input.Keyboard
 
 @Mod(
   modid = AE2Stuff.modId,
   version = "GRADLETOKEN_VERSION",
   name = "AE2 Stuff",
   dependencies =
-    "required-after:appliedenergistics2;required-after:bdlib@[1.9.4.109,)",
+    "required-after:appliedenergistics2;required-after:bdlib@[1.9.4.109,);required-after:gtnhlib@[0.6.5,)",
   modLanguage = "scala"
 )
 object AE2Stuff {
@@ -46,6 +48,7 @@ object AE2Stuff {
   var configDir: File = null
 
   val guiHandler = new GuiHandler
+  val keybindLCtrl: SyncedKeybind = SyncedKeybind.create(Keyboard.KEY_LCONTROL)
 
   def logDebug(msg: String, args: Any*) = log.debug(msg.format(args: _*))
   def logInfo(msg: String, args: Any*) = log.info(msg.format(args: _*))

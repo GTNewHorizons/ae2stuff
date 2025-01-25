@@ -11,6 +11,7 @@ package net.bdew.ae2stuff.items
 
 import appeng.api.config.SecurityPermissions
 import appeng.api.exceptions.FailedConnection
+import net.bdew.ae2stuff.AE2Stuff
 import net.bdew.ae2stuff.grid.Security
 import net.bdew.ae2stuff.machines.wireless.{BlockWireless, TileWireless}
 import net.bdew.ae2stuff.misc.AdvItemLocationStore
@@ -20,7 +21,6 @@ import net.bdew.lib.items.SimpleItem
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.ItemStack
 import net.minecraft.world.World
-import org.lwjgl.input.Keyboard
 
 import java.util
 
@@ -53,7 +53,7 @@ object AdvWirelessKit
   ): ItemStack = {
     import net.bdew.lib.helpers.ChatHelper._
     if (!world.isRemote && player.isSneaking) {
-      if (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)) {
+      if (AE2Stuff.keybindLCtrl.isKeyDown(player)) {
         while (hasLocation(stack)) {
           popLocation(stack)
         }
@@ -97,7 +97,7 @@ object AdvWirelessKit
     if (!pos.blockIs(world, BlockWireless)) return false
     if (!world.isRemote) {
       if (player.isSneaking) {
-        if (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)) {
+        if (AE2Stuff.keybindLCtrl.isKeyDown(player)) {
           while (hasLocation(stack)) {
             popLocation(stack)
           }
@@ -149,7 +149,7 @@ object AdvWirelessKit
               return true
             }
             isHub = tempTE.isHub
-            if (isHub && Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)) {
+            if (isHub && AE2Stuff.keybindLCtrl.isKeyDown(player)) {
               val t = 32 - tempTE.connectionsList.length
               var i = 0
               while (i < t) {
@@ -184,7 +184,7 @@ object AdvWirelessKit
           while (doLoop) {
             doLoop = false
             if (hasLocation(stack)) {
-              if (tile.isHub && Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)) {
+              if (tile.isHub && AE2Stuff.keybindLCtrl.isKeyDown(player)) {
                 if (
                   tile.connectionsList.length < 31 && getLocations(stack)
                     .tagCount() > 1
