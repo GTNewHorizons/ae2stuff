@@ -52,7 +52,7 @@ object AdvWirelessKit
       player: EntityPlayer
   ): ItemStack = {
     import net.bdew.lib.helpers.ChatHelper._
-    if (!world.isRemote && player.isSneaking) {
+    if (!world.isRemote && AE2Stuff.keybindLShift.isKeyDown(player)) {
       if (AE2Stuff.keybindLCtrl.isKeyDown(player)) {
         while (hasLocation(stack)) {
           popLocation(stack)
@@ -96,7 +96,7 @@ object AdvWirelessKit
     val pos = BlockRef(x, y, z)
     if (!pos.blockIs(world, BlockWireless)) return false
     if (!world.isRemote) {
-      if (player.isSneaking) {
+      if (AE2Stuff.keybindLShift.isKeyDown(player)) {
         if (AE2Stuff.keybindLCtrl.isKeyDown(player)) {
           while (hasLocation(stack)) {
             popLocation(stack)
