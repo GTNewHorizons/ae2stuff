@@ -33,6 +33,10 @@ ae2stuff.wireless.tool.noexist=le connecteur lié n'existe pas
 ae2stuff.wireless.tool.security.network=Violation de sécurité - les réseaux ne peuvent pas se connecter
 ae2stuff.wireless.tool.security.player=Violation de sécurité - vous n'êtes pas autorisé à modifier ce réseau
 
+ae2stuff.wireless.tooltips.advtool.queueing.clear=Accroupi + %s + Clic-droit pour vider la file d'attente
+ae2stuff.wireless.tooltips.advtool.hubqols.binding=%s + Clic-droit pour connecter à tous les emplacements libres du hub
+ae2stuff.wireless.tooltips.advtool.hubqols.queueing=%s + Clic-droit pour ajouter tous les emplacements libres du hub à la file d'attente
+
 ae2stuff.visualiser.bound=Visualisation du réseau à %s,%s,%s
 ae2stuff.visualiser.mode=Mode :
 ae2stuff.visualiser.set=Mode changé en %s

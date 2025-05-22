@@ -48,7 +48,12 @@ object AE2Stuff {
   var configDir: File = null
 
   val guiHandler = new GuiHandler
-  val keybindLCtrl: SyncedKeybind = SyncedKeybind.create(Keyboard.KEY_LCONTROL)
+  val keybindModeId = "ae2stuff.key.mode"
+  val keybindModeSwitch = SyncedKeybind.createConfigurable(
+    keybindModeId,
+    "itemGroup.bdew.ae2stuff",
+    Keyboard.CHAR_NONE
+  )
 
   def logDebug(msg: String, args: Any*) = log.debug(msg.format(args: _*))
   def logInfo(msg: String, args: Any*) = log.info(msg.format(args: _*))

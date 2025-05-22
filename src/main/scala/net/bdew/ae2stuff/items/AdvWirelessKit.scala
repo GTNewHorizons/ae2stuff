@@ -21,6 +21,10 @@ import net.bdew.lib.items.SimpleItem
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.ItemStack
 import net.minecraft.world.World
+import net.minecraft.client.resources.I18n
+import net.minecraft.client.settings.KeyBinding
+import net.minecraft.client.Minecraft
+import org.lwjgl.input.Keyboard
 
 import java.util
 
@@ -53,7 +57,7 @@ object AdvWirelessKit
   ): ItemStack = {
     import net.bdew.lib.helpers.ChatHelper._
     if (!world.isRemote && player.isSneaking) {
-      if (AE2Stuff.keybindLCtrl.isKeyDown(player)) {
+      if (AE2Stuff.keybindModeSwitch.isKeyDown(player)) {
         while (hasLocation(stack)) {
           popLocation(stack)
         }
@@ -97,7 +101,7 @@ object AdvWirelessKit
     if (!pos.blockIs(world, BlockWireless)) return false
     if (!world.isRemote) {
       if (player.isSneaking) {
-        if (AE2Stuff.keybindLCtrl.isKeyDown(player)) {
+        if (AE2Stuff.keybindModeSwitch.isKeyDown(player)) {
           while (hasLocation(stack)) {
             popLocation(stack)
           }
@@ -149,7 +153,7 @@ object AdvWirelessKit
               return true
             }
             isHub = tempTE.isHub
-            if (isHub && AE2Stuff.keybindLCtrl.isKeyDown(player)) {
+            if (isHub && AE2Stuff.keybindModeSwitch.isKeyDown(player)) {
               val t = 32 - tempTE.connectionsList.length
               var i = 0
               while (i < t) {
@@ -184,7 +188,7 @@ object AdvWirelessKit
           while (doLoop) {
             doLoop = false
             if (hasLocation(stack)) {
-              if (tile.isHub && AE2Stuff.keybindLCtrl.isKeyDown(player)) {
+              if (tile.isHub && AE2Stuff.keybindModeSwitch.isKeyDown(player)) {
                 if (
                   tile.connectionsList.length < 31 && getLocations(stack)
                     .tagCount() > 1
@@ -317,9 +321,7 @@ object AdvWirelessKit
           list.add(loc.x + "," + loc.y + "," + loc.z)
         }
       }
-      list.add(
-        Misc.toLocal("ae2stuff.wireless.tooltips.advtool.hubqols.queueing")
-      )
+      list.add(I18n.format("ae2stuff.wireless.tooltips.advtool.hubqols.queueing", Minecraft.getMinecraft.gameSettings.keyBindings.find(_.getKeyDescription == AE2Stuff.keybindModeId).map(kb => Keyboard.getKeyName(kb.getKeyCode)).getOrElse("NONE")))
     } else if (getMode(stack) == MODE_BINDING) {
       list.add(Misc.toLocal("ae2stuff.wireless.advtool.binding"))
       if (getLocations(stack).tagCount() == 0) {
@@ -331,11 +333,9 @@ object AdvWirelessKit
           list.add(loc.x + "," + loc.y + "," + loc.z)
         }
       }
-      list.add(
-        Misc.toLocal("ae2stuff.wireless.tooltips.advtool.hubqols.binding")
-      )
+      list.add(I18n.format("ae2stuff.wireless.tooltips.advtool.hubqols.binding", Minecraft.getMinecraft.gameSettings.keyBindings.find(_.getKeyDescription == AE2Stuff.keybindModeId).map(kb => Keyboard.getKeyName(kb.getKeyCode)).getOrElse("NONE")))
     }
-    list.add(Misc.toLocal("ae2stuff.wireless.tooltips.advtool.queueing.clear"))
+    list.add(I18n.format("ae2stuff.wireless.tooltips.advtool.queueing.clear", Minecraft.getMinecraft.gameSettings.keyBindings.find(_.getKeyDescription == AE2Stuff.keybindModeId).map(kb => Keyboard.getKeyName(kb.getKeyCode)).getOrElse("NONE")))
     list.add(Misc.toLocal("ae2stuff.wireless.advtool.extra"))
   }
 }
