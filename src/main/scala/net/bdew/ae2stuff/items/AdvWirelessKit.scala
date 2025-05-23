@@ -321,7 +321,15 @@ object AdvWirelessKit
           list.add(loc.x + "," + loc.y + "," + loc.z)
         }
       }
-      list.add(I18n.format("ae2stuff.wireless.tooltips.advtool.hubqols.queueing", Minecraft.getMinecraft.gameSettings.keyBindings.find(_.getKeyDescription == AE2Stuff.keybindModeId).map(kb => Keyboard.getKeyName(kb.getKeyCode)).getOrElse("NONE")))
+      list.add(
+        I18n.format(
+          "ae2stuff.wireless.tooltips.advtool.hubqols.queueing",
+          Minecraft.getMinecraft.gameSettings.keyBindings
+            .find(_.getKeyDescription == AE2Stuff.keybindModeId)
+            .map(kb => Keyboard.getKeyName(kb.getKeyCode))
+            .getOrElse("NONE")
+        )
+      )
     } else if (getMode(stack) == MODE_BINDING) {
       list.add(Misc.toLocal("ae2stuff.wireless.advtool.binding"))
       if (getLocations(stack).tagCount() == 0) {
@@ -333,9 +341,25 @@ object AdvWirelessKit
           list.add(loc.x + "," + loc.y + "," + loc.z)
         }
       }
-      list.add(I18n.format("ae2stuff.wireless.tooltips.advtool.hubqols.binding", Minecraft.getMinecraft.gameSettings.keyBindings.find(_.getKeyDescription == AE2Stuff.keybindModeId).map(kb => Keyboard.getKeyName(kb.getKeyCode)).getOrElse("NONE")))
+      list.add(
+        I18n.format(
+          "ae2stuff.wireless.tooltips.advtool.hubqols.binding",
+          Minecraft.getMinecraft.gameSettings.keyBindings
+            .find(_.getKeyDescription == AE2Stuff.keybindModeId)
+            .map(kb => Keyboard.getKeyName(kb.getKeyCode))
+            .getOrElse("NONE")
+        )
+      )
     }
-    list.add(I18n.format("ae2stuff.wireless.tooltips.advtool.queueing.clear", Minecraft.getMinecraft.gameSettings.keyBindings.find(_.getKeyDescription == AE2Stuff.keybindModeId).map(kb => Keyboard.getKeyName(kb.getKeyCode)).getOrElse("NONE")))
+    list.add(
+      I18n.format(
+        "ae2stuff.wireless.tooltips.advtool.queueing.clear",
+        Minecraft.getMinecraft.gameSettings.keyBindings
+          .find(_.getKeyDescription == AE2Stuff.keybindModeId)
+          .map(kb => Keyboard.getKeyName(kb.getKeyCode))
+          .getOrElse("NONE")
+      )
+    )
     list.add(Misc.toLocal("ae2stuff.wireless.advtool.extra"))
   }
 }
