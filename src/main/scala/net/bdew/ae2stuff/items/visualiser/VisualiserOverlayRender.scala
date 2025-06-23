@@ -43,6 +43,8 @@ object VisualiserOverlayRender extends WorldOverlayRenderer {
           (255, 0, 0)
         else if (node.flags.contains(VNodeFlags.DENSE))
           (255, 255, 0)
+        else if (node.flags.contains(VNodeFlags.PROXY))
+          (255, 165, 0)
         else
           (0, 0, 255)
 
@@ -200,6 +202,8 @@ object VisualiserOverlayRender extends WorldOverlayRenderer {
         tess.setColorRGBA(255, 0, 255, 255)
       } else if (link.flags.contains(VLinkFlags.DENSE)) {
         tess.setColorRGBA(255, 255, 0, 255)
+      } else if (link.flags.contains(VLinkFlags.PROXY)) {
+        tess.setColorRGBA(255, 165, 0, 255)
       } else {
         tess.setColorRGBA(0, 0, 255, 255)
       }
