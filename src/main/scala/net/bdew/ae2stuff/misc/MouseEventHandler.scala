@@ -10,6 +10,7 @@
 package net.bdew.ae2stuff.misc
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent
+import net.bdew.ae2stuff.AE2Stuff
 import net.bdew.ae2stuff.items.visualiser.{
   ItemVisualiser,
   VisualisationModes,
@@ -36,17 +37,18 @@ object MouseEventHandler {
     val stack = player.inventory.getCurrentItem
     if (stack == null || stack.getItem == null) return
     if (stack.getItem == ItemVisualiser) {
-      val newMode =
-        if (ev.dwheel.signum > 0)
-          Misc.nextInSeq(
-            VISUALISATION_MODES,
-            ItemVisualiser.getMode(stack)
-          )
-        else
-          Misc.prevInSeq(
-            VISUALISATION_MODES,
-            ItemVisualiser.getMode(stack)
-          )
+      var newMode = ItemVisualiser.getMode(stack)
+      if (ev.dwheel.signum > 0) {
+        newMode = Misc.nextInSeq(VISUALISATION_MODES, newMode)
+        if (!AE2Stuff.isGTloaded && newMode == VisualisationModes.PROXY) {
+          newMode = Misc.nextInSeq(VISUALISATION_MODES, newMode)
+        }
+      } else {
+        newMode = Misc.prevInSeq(VISUALISATION_MODES, newMode)
+        if (!AE2Stuff.isGTloaded && newMode == VisualisationModes.PROXY) {
+          newMode = Misc.prevInSeq(VISUALISATION_MODES, newMode)
+        }
+      }
       ItemVisualiser.setMode(stack, newMode)
       VisualiserOverlayRender.needListRefresh = true
       NetHandler.sendToServer(MsgVisualisationMode(newMode))
