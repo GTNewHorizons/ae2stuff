@@ -93,5 +93,5 @@ object VisualisationData {
 }
 
 object VisualisationModes extends Enumeration {
-  val FULL, NODES, CHANNELS, NONUM, P2P = Value
+  val FULL, NODES, CHANNELS, NONUM, P2P, PROXY = Value
 }
