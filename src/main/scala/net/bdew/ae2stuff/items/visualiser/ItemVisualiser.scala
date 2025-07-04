@@ -167,11 +167,11 @@ object ItemVisualiser extends SimpleItem("Visualiser") with ItemLocationStore {
                 val proxyFlag = VNodeFlags.ValueSet.apply(VNodeFlags.PROXY)
                 val linkFlag = VLinkFlags.ValueSet.apply(VLinkFlags.PROXY)
                 for {
-                  proxy <- node.getMachine
+                  proxyHatch <- node.getMachine
                     .asInstanceOf[MTEHatchCraftingInputME]
-                    .getProxies
+                    .getProxyHatches
                 } {
-                  val BMTE = proxy.getBaseMetaTileEntity
+                  val BMTE = proxyHatch.getBaseMetaTileEntity
                   val proxyNode = VNode(
                     BMTE.getXCoord,
                     BMTE.getYCoord,
