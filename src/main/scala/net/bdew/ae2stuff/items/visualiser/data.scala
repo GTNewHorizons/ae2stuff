@@ -14,11 +14,11 @@ import java.io._
 import net.bdew.ae2stuff.AE2Stuff
 
 object VNodeFlags extends Enumeration {
-  val DENSE, MISSING = Value
+  val DENSE, MISSING, PROXY = Value
 }
 
 object VLinkFlags extends Enumeration {
-  val DENSE, COMPRESSED = Value
+  val DENSE, COMPRESSED, PROXY = Value
 }
 
 case class VNode(x: Int, y: Int, z: Int, flags: VNodeFlags.ValueSet)
@@ -93,5 +93,5 @@ object VisualisationData {
 }
 
 object VisualisationModes extends Enumeration {
-  val FULL, NODES, CHANNELS, NONUM, P2P = Value
+  val FULL, NODES, CHANNELS, NONUM, P2P, PROXY = Value
 }
