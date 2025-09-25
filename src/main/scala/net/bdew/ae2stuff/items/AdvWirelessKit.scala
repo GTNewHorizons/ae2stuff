@@ -128,7 +128,7 @@ object AdvWirelessKit
         }
         return true;
       }
-      pos.getTile[TileWireless](world) foreach { tile =>
+      pos.getTile[TileWireless](world) match { case Some(tile) =>
         val pid = Security.getPlayerId(player)
         // Check that the player can modify the network
         if (
