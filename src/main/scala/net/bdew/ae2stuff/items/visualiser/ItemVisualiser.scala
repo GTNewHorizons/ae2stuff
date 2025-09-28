@@ -11,8 +11,11 @@ package net.bdew.ae2stuff.items.visualiser
 
 import java.util
 import java.util.Locale
-
 import appeng.api.networking.{GridFlags, IGridConnection, IGridHost}
+import appeng.me.GridNode
+import cpw.mods.fml.common.Loader
+import gregtech.common.tileentities.machines.MTEHatchCraftingInputME
+import net.bdew.ae2stuff.AE2Stuff
 import net.bdew.ae2stuff.misc.ItemLocationStore
 import net.bdew.ae2stuff.network.{
   MsgVisualisationData,
@@ -122,7 +125,7 @@ object ItemVisualiser extends SimpleItem("Visualiser") with ItemLocationStore {
         import scala.collection.JavaConversions._
         var seen = Set.empty[IGridConnection]
         var connections = Set.empty[IGridConnection]
-        val nodes = (for (node <- grid.getNodes) yield {
+        var nodes = (for (node <- grid.getNodes) yield {
           val block = node.getGridBlock
           if (block.isWorldAccessible && block.getLocation.isInWorld(world)) {
             val loc = block.getLocation
@@ -135,7 +138,7 @@ object ItemVisualiser extends SimpleItem("Visualiser") with ItemLocationStore {
           } else None
         }).flatten.toMap
 
-        val connList = for {
+        var connList = for {
           c <- connections
           n1 <- nodes.get(c.a())
           n2 <- nodes.get(c.b()) if n1 != n2
@@ -152,6 +155,35 @@ object ItemVisualiser extends SimpleItem("Visualiser") with ItemLocationStore {
               .hasFlag(GridFlags.CANNOT_CARRY_COMPRESSED)
           ) flags += VLinkFlags.COMPRESSED
           VLink(n1, n2, c.getUsedChannels, flags)
+        }
+
+        if (AE2Stuff.isGTloaded) {
+          for {
+            node <- grid.getNodes
+          } {
+            val block = node.getGridBlock
+            if (block.isWorldAccessible && block.getLocation.isInWorld(world)) {
+              if (node.getMachine.isInstanceOf[MTEHatchCraftingInputME]) {
+                val proxyFlag = VNodeFlags.ValueSet.apply(VNodeFlags.PROXY)
+                val linkFlag = VLinkFlags.ValueSet.apply(VLinkFlags.PROXY)
+                for {
+                  proxyHatch <- node.getMachine
+                    .asInstanceOf[MTEHatchCraftingInputME]
+                    .getProxyHatches
+                } {
+                  val BMTE = proxyHatch.getBaseMetaTileEntity
+                  val proxyNode = VNode(
+                    BMTE.getXCoord,
+                    BMTE.getYCoord,
+                    BMTE.getZCoord,
+                    proxyFlag
+                  )
+                  nodes ++= Some(new GridNode(null) -> proxyNode)
+                  connList ++= Some(VLink(nodes(node), proxyNode, 0, linkFlag))
+                }
+              }
+            }
+          }
         }
 
         NetHandler.sendTo(

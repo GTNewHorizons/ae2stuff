@@ -12,7 +12,7 @@ package net.bdew.ae2stuff
 import com.gtnewhorizon.gtnhlib.keybind.SyncedKeybind
 
 import java.io.File
-import cpw.mods.fml.common.Mod
+import cpw.mods.fml.common.{Loader, Mod}
 import cpw.mods.fml.common.Mod.EventHandler
 import cpw.mods.fml.common.event._
 import cpw.mods.fml.common.network.NetworkRegistry
@@ -55,6 +55,8 @@ object AE2Stuff {
     Keyboard.CHAR_NONE
   )
 
+  var isGTloaded = false
+
   def logDebug(msg: String, args: Any*) = log.debug(msg.format(args: _*))
   def logInfo(msg: String, args: Any*) = log.info(msg.format(args: _*))
   def logWarn(msg: String, args: Any*) = log.warn(msg.format(args: _*))
@@ -71,6 +73,7 @@ object AE2Stuff {
     TuningLoader.loadConfigFiles()
     Machines.load()
     Items.load()
+    isGTloaded = Loader.isModLoaded("gregtech")
   }
 
   @EventHandler

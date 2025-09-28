@@ -9,6 +9,7 @@
 
 package net.bdew.ae2stuff.items.visualiser
 
+import net.bdew.ae2stuff.items.visualiser
 import net.bdew.ae2stuff.misc.{OverlayRenderHandler, WorldOverlayRenderer}
 import net.bdew.ae2stuff.network.{MsgVisualisationData, NetHandler}
 import net.bdew.lib.Client
@@ -33,16 +34,27 @@ object VisualiserOverlayRender extends WorldOverlayRenderer {
     needListRefresh = true
   }
 
-  def renderNodes(): Unit = {
+  def renderNodes(mode: VisualisationModes.Value): Unit = {
     val tess = Tessellator.instance
     tess.startDrawing(GL11.GL_QUADS)
 
-    for (node <- currentLinks.nodes) {
+    for (
+      node <- currentLinks.nodes if (mode match {
+        case VisualisationModes.NODES => !node.flags.contains(VNodeFlags.PROXY)
+        case VisualisationModes.CHANNELS => false
+        case VisualisationModes.NONUM => !node.flags.contains(VNodeFlags.PROXY)
+        case VisualisationModes.P2P   => false
+        case VisualisationModes.PROXY => node.flags.contains(VNodeFlags.PROXY)
+        case _                        => true
+      })
+    ) {
       val color =
         if (node.flags.contains(VNodeFlags.MISSING))
           (255, 0, 0)
         else if (node.flags.contains(VNodeFlags.DENSE))
           (255, 255, 0)
+        else if (node.flags.contains(VNodeFlags.PROXY))
+          (255, 165, 0)
         else
           (0, 0, 255)
 
@@ -188,18 +200,33 @@ object VisualiserOverlayRender extends WorldOverlayRenderer {
     tess.draw()
   }
 
-  def renderLinks(links: Seq[VLink], width: Float, onlyP2P: Boolean): Unit = {
+  def renderLinks(
+      links: Seq[VLink],
+      width: Float,
+      mode: VisualisationModes.Value
+  ): Unit = {
     GL11.glLineWidth(width)
     val tess = Tessellator.instance
     tess.startDrawing(GL11.GL_LINES)
 
     for (
-      link <- links if (!onlyP2P) || link.flags.contains(VLinkFlags.COMPRESSED)
+      link <- links if (mode match {
+        case VisualisationModes.NODES => false
+        case VisualisationModes.CHANNELS =>
+          !link.flags.contains(VLinkFlags.PROXY)
+        case VisualisationModes.NONUM => !link.flags.contains(VLinkFlags.PROXY)
+        case VisualisationModes.P2P =>
+          link.flags.contains(VLinkFlags.COMPRESSED)
+        case VisualisationModes.PROXY => link.flags.contains(VLinkFlags.PROXY)
+        case _                        => true
+      })
     ) {
       if (link.flags.contains(VLinkFlags.COMPRESSED)) {
         tess.setColorRGBA(255, 0, 255, 255)
       } else if (link.flags.contains(VLinkFlags.DENSE)) {
         tess.setColorRGBA(255, 255, 0, 255)
+      } else if (link.flags.contains(VLinkFlags.PROXY)) {
+        tess.setColorRGBA(255, 165, 0, 255)
       } else {
         tess.setColorRGBA(0, 0, 255, 255)
       }
@@ -222,13 +249,15 @@ object VisualiserOverlayRender extends WorldOverlayRenderer {
   val renderNodesModes = Set(
     VisualisationModes.NODES,
     VisualisationModes.FULL,
-    VisualisationModes.NONUM
+    VisualisationModes.NONUM,
+    VisualisationModes.PROXY
   )
   val renderLinksModes = Set(
     VisualisationModes.CHANNELS,
     VisualisationModes.FULL,
     VisualisationModes.NONUM,
-    VisualisationModes.P2P
+    VisualisationModes.P2P,
+    VisualisationModes.PROXY
   )
 
   override def doRender(
@@ -263,14 +292,14 @@ object VisualiserOverlayRender extends WorldOverlayRenderer {
       GL11.glNewList(staticList, GL11.GL_COMPILE)
 
       if (renderNodesModes.contains(mode))
-        renderNodes()
+        renderNodes(mode)
 
       GL11.glEnable(GL11.GL_LINE_SMOOTH)
       GL11.glHint(GL11.GL_LINE_SMOOTH_HINT, GL11.GL_NICEST)
 
       if (renderLinksModes.contains(mode)) {
-        renderLinks(dense, 16f, mode == VisualisationModes.P2P)
-        renderLinks(normal, 4f, mode == VisualisationModes.P2P)
+        renderLinks(dense, 16f, mode)
+        renderLinks(normal, 4f, mode)
       }
 
       GL11.glEndList()
