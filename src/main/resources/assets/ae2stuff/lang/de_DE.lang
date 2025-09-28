@@ -1,12 +1,23 @@
 tile.ae2stuff.Encoder.name=Schablonenkodierer
-tile.ae2stuff.Grower.name=Kristallwachstumskammer
+tile.ae2stuff.Grower.name=Kristallzuchtkammer
 tile.ae2stuff.Inscriber.name=Erweiterte Gravurmaschine
+tile.ae2stuff.Wireless.name=Drahtlosanschluss
+
+item.ae2stuff.WirelessKit.name=Kabelloses Setup-Kit
+item.ae2stuff.AdvWirelessKit.name=Verbessertes kabelloses Setup-Kit
+item.ae2stuff.Visualiser.name=Netzwerk-Übersichtsgerät
 
 ae2stuff.error.not_connected=Netzwerk nicht verbunden
 
 ae2stuff.waila.sleep.true=Ruhezustand
 ae2stuff.waila.sleep.false=Aktiv
 ae2stuff.waila.power=%s / %s AE
+
+ae2stuff.waila.wireless.connected=Verbunden mit %s,%s,%s
+ae2stuff.waila.wireless.notconnected=Nicht verbunden
+ae2stuff.waila.wireless.channels=Kanäle: %s
+ae2stuff.waila.wireless.power=Energieverbrauch: %s AE/t
+ae2stuff.waila.wireless.name=Name: %s
 
 ae2stuff.gui.lock.on=Geschützt - Kann mit Automatisierung nicht entfernt werden
 ae2stuff.gui.lock.off=Nicht geschützt - Kann mit Automatisierung entfernt werden
@@ -15,3 +26,44 @@ ae2stuff.gui.lock.note=Wenn der mittlere Slot leer ist und keine Arbeit im Gange
 ae2stuff.gui.recipes=Rezepte
 
 itemGroup.bdew.ae2stuff=AE2 Stuff
+
+ae2stuff.wireless.tool.empty=Zum Koppeln Drahtlosanschluss anklicken
+ae2stuff.wireless.tool.bound1=Koppeln mit %s,%s,%s
+ae2stuff.wireless.tool.bound2=Zum miteinander Koppeln anderen Drahtlosanschluss anklicken
+ae2stuff.wireless.advtool.queueing=§aWarteschlangen-Modus
+ae2stuff.wireless.advtool.binding=§aKoppelmodus
+ae2stuff.wireless.advtool.queueing.activated=Warteschlangen-Modus aktiviert
+ae2stuff.wireless.advtool.binding.activated=Koppelmodus aktiviert
+ae2stuff.wireless.advtool.queued=Anschluss bei %s,%s,%s zur Warteschlange hinzugefügt
+ae2stuff.wireless.advtool.queuederror=Anschluss ist bereits in der Warteschlange
+ae2stuff.wireless.advtool.queueing.empty=Anschluss anklicken, um ihn zur Warteschlange hinzuzufügen
+ae2stuff.wireless.advtool.binding.empty=Zum Warteschlangen-Modus wechseln, um Anschluss zur Warteschlange hinzuzufügen
+ae2stuff.wireless.advtool.queueing.notempty=Anschlüsse in Warteschlange:
+ae2stuff.wireless.advtool.binding.notempty=Aktuelle Anschlüsse zum Koppeln in der Warteschlange:
+ae2stuff.wireless.advtool.connector.next=Nächster Anschluss in der Warteschlange: %s,%s,%s
+ae2stuff.wireless.advtool.extra=§oSchleichen und rechtsklicken um zwischen Wartenschlangen- und Koppelmodus zu wechseln
+ae2stuff.wireless.advtool.noconnectors=Keine Anschlüsse in der Warteschlange. Werkzeug muss im Warteschlangen-Modus sein um welche hinzuzufügen
+ae2stuff.wireless.advtool.pop=Anschluss %s,%s,%s aus Warteschlange entfernt
+ae2stuff.wireless.advtool.hub.queued=%s Hub-slots zur Warteschlange hinzugefügt
+ae2stuff.wireless.advtool.queueing.clear=Warteschlange aufgelöst
+ae2stuff.wireless.tooltips.advtool.queueing.clear=Schleichen + %s + Rechtsklick um Warteschlange aufzulösen
+ae2stuff.wireless.tooltips.advtool.hubqols.binding=%s + Rechtsklick um alle freien Hub-Slots zu koppeln
+ae2stuff.wireless.tooltips.advtool.hubqols.queueing=%s + Rechtsklick um alle freien Hub-Slots zur Warteschlange hinzuzufügen
+ae2stuff.wireless.tool.connected=Verbunden mit %s,%s,%s
+ae2stuff.wireless.tool.failed=Verbindung fehlgeschlagen
+ae2stuff.wireless.tool.dimension=Beide Anschlüsse müssen in derselben Dimension sein
+ae2stuff.wireless.tool.noexist=Gekoppelter Anschluss existiert nicht
+ae2stuff.wireless.tool.security.player=Zugriff verboten - Du bist nicht dazu freigegeben, dieses Netzwerk zu bearbeiten
+ae2stuff.wireless.tool.targethubfull=Ziel-Hub ist voll
+
+ae2stuff.visualiser.bound=Visualisiere Netzwerk bei %s,%s,%s
+ae2stuff.visualiser.mode=Modus:
+ae2stuff.visualiser.set=Modus eingestellt zu %s
+ae2stuff.visualiser.mode.full=Alles anzeigen
+ae2stuff.visualiser.mode.nodes=Knotenpunkte anzeigen
+ae2stuff.visualiser.mode.channels=Kanäle anzeigen
+ae2stuff.visualiser.mode.nonum=Kanäle und Knotenpunkte anzeigen
+ae2stuff.visualiser.mode.p2p=P2P-Verbindungen anzeigen
+
+itemGroup.bdew.ae2stuff=AE2 Stuff
+ae2stuff.key.mode=Modus wechseln
