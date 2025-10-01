@@ -16,8 +16,10 @@ import net.minecraft.nbt.NBTTagCompound
 
 trait ItemLocationStore extends Item {
   def hasLocation(stack: ItemStack): Boolean =
-    stack.getItem == this && stack.hasTagCompound && stack.getTagCompound
-      .hasKey("loc")
+    stack != null &&
+      stack.getItem == this &&
+      stack.hasTagCompound &&
+      stack.getTagCompound.hasKey("loc")
 
   def getLocation(stack: ItemStack): BlockRef =
     BlockRef.fromNBT(stack.getTagCompound.getCompoundTag("loc"))
