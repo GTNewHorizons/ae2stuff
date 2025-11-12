@@ -97,11 +97,4 @@ object WirelessConnectionRenderer {
       (from == pos1 && to == pos2) || (from == pos2 && to == pos1)
     }
   }
-
-  def clearAll(): Unit = {
-    pinnedConnections.clear()
-    pinnedHubs.clear()
-    hubConnections.clear()
-    actualHubConnections.clear()
-  }
 }

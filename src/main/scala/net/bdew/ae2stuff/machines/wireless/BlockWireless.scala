@@ -40,7 +40,7 @@ object BlockWireless
     with BlockWrenchable
     with HasItemBlock {
 
-  override val TEClass = classOf[TileWireless]
+  override val TEClass: Class[TileWireless] = classOf[TileWireless]
   override val ItemBlockClass: Class[_ <: ItemBlockWireless] =
     classOf[ItemBlockWireless]
 
@@ -145,11 +145,13 @@ object BlockWireless
       stack: ItemStack
   ): Unit = {
     val te = getTE(world, x, y, z)
-    if (player.isInstanceOf[EntityPlayer]) {
-      te.placingPlayer = player.asInstanceOf[EntityPlayer]
+    player match {
+      case player1: EntityPlayer =>
+        te.placingPlayer = player1
+      case _ =>
     }
     if (stack != null) {
-      val itemDamage = stack.getItemDamage()
+      val itemDamage = stack.getItemDamage
       if (stack.hasDisplayName) {
         te.customName = stack.getDisplayName
       }
@@ -245,8 +247,8 @@ object BlockWireless
     false
   }
 
-  var icon_on: List[IIcon] = null
-  var icon_off: List[IIcon] = null
+  private var icon_on: List[IIcon] = _
+  private var icon_off: List[IIcon] = _
 
   @SideOnly(Side.CLIENT)
   override def getIcon(
@@ -310,7 +312,7 @@ class ItemBlockWireless(b: Block) extends ItemBlockTooltip(b) {
       advanced: Boolean
   ): Unit = {
     super.addInformation(stack, player, list, advanced)
-    val itemDamage = stack.getItemDamage()
+    val itemDamage = stack.getItemDamage
     if (itemDamage == 17) {
       list
         .asInstanceOf[util.List[String]]

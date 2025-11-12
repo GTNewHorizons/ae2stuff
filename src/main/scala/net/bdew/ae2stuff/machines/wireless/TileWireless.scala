@@ -36,25 +36,25 @@ class TileWireless
     with ICustomNameObject
     with IColorableTile {
 
-  val cfg = MachineWireless
+  private val cfg = MachineWireless
 
-  val link =
+  val link: DataSlotPos =
     DataSlotPos("link", this).setUpdate(UpdateKind.SAVE, UpdateKind.WORLD)
 
-  var connection: IGridConnection = null
+  var connection: IGridConnection = _
 
-  lazy val myPos = BlockRef.fromTile(this)
+  private lazy val myPos = BlockRef.fromTile(this)
 
-  var customName: String = null
+  var customName: String = _
   var color: AEColor = AEColor.Transparent
   var isHub = false
   var connectionsList = Array.empty[TileWireless]
-  var hubPowerUsage = 0d
+  private var hubPowerUsage = 0d
 
-  def isLinked = link.isDefined
-  def getLink = link.flatMap(_.getTile[TileWireless](worldObj))
+  def isLinked: Boolean = link.isDefined
+  def getLink: Option[TileWireless] = link.flatMap(_.getTile[TileWireless](worldObj))
 
-  override def getFlags = util.EnumSet.of(GridFlags.DENSE_CAPACITY)
+  override def getFlags: util.EnumSet[GridFlags] = util.EnumSet.of(GridFlags.DENSE_CAPACITY)
 
   serverTick.listen(() => {
     if (connection == null && link.isDefined) {
@@ -123,7 +123,7 @@ class TileWireless
     }
   }
 
-  def setupConnection(): Boolean = {
+  private def setupConnection(): Boolean = {
     getLink.foreach { that =>
       connection =
         AEApi.instance().createGridConnection(this.getNode, that.getNode)
@@ -164,7 +164,7 @@ class TileWireless
     false
   }
 
-  def setHubPowerUse(power: Double): Unit = {
+  private def setHubPowerUse(power: Double): Unit = {
     hubPowerUsage += power
     this.setIdlePowerUse(hubPowerUsage)
   }
@@ -173,7 +173,7 @@ class TileWireless
     connectionsList.map(_.connection.getUsedChannels).sum
   }
 
-  def breakConnection(): Unit = {
+  private def breakConnection(): Unit = {
     if (connection != null)
       connection.destroy()
     connection = null

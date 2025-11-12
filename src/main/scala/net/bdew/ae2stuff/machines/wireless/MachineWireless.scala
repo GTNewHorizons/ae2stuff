@@ -12,6 +12,6 @@ package net.bdew.ae2stuff.machines.wireless
 import net.bdew.lib.machine.Machine
 
 object MachineWireless extends Machine("Wireless", BlockWireless) {
-  lazy val powerBase = tuning.getDouble("PowerBase")
-  lazy val powerDistanceMultiplier = tuning.getDouble("PowerDistanceMultiplier")
+  lazy val powerBase: Double = tuning.getDouble("PowerBase")
+  lazy val powerDistanceMultiplier: Double = tuning.getDouble("PowerDistanceMultiplier")
 }
