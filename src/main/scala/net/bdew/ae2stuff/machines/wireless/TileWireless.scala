@@ -35,24 +35,28 @@ class TileWireless
     with VariableIdlePower
     with ICustomNameObject
     with IColorableTile {
-  val cfg = MachineWireless
 
-  val link =
+  private val cfg = MachineWireless
+
+  val link: DataSlotPos =
     DataSlotPos("link", this).setUpdate(UpdateKind.SAVE, UpdateKind.WORLD)
 
-  var connection: IGridConnection = null
+  var connection: IGridConnection = _
 
-  lazy val myPos = BlockRef.fromTile(this)
+  private lazy val myPos = BlockRef.fromTile(this)
 
-  var customName: String = null
+  var customName: String = _
   var color: AEColor = AEColor.Transparent
   var isHub = false
-  var connectionsList = Array[TileWireless]()
-  var hubPowerUsage = 0d;
-  def isLinked = link.isDefined
-  def getLink = link flatMap (_.getTile[TileWireless](worldObj))
+  var connectionsList = Array.empty[TileWireless]
+  private var hubPowerUsage = 0d
 
-  override def getFlags = util.EnumSet.of(GridFlags.DENSE_CAPACITY)
+  def isLinked: Boolean = link.isDefined
+  def getLink: Option[TileWireless] =
+    link.flatMap(_.getTile[TileWireless](worldObj))
+
+  override def getFlags: util.EnumSet[GridFlags] =
+    util.EnumSet.of(GridFlags.DENSE_CAPACITY)
 
   serverTick.listen(() => {
     if (connection == null && link.isDefined) {
@@ -93,32 +97,50 @@ class TileWireless
   }
 
   def doUnlink(): Unit = {
-    if (isHub) {
-      connectionsList foreach { that =>
-        that.doUnlink()
+    val pos = BlockRef.fromTile(this)
+
+    WirelessConnectionRenderer.getPinnedConnections
+      .filter { case (from, to) => from == pos || to == pos }
+      .foreach { case (from, to) =>
+        WirelessConnectionRenderer.unpinConnection(from, to)
       }
+
+    if (WirelessConnectionRenderer.isHubPinned(pos)) {
+      WirelessConnectionRenderer.unpinHub(pos)
+    }
+
+    if (isHub) {
+      WirelessConnectionRenderer.getPinnedConnections
+        .filter { case (from, to) => from == pos || to == pos }
+        .foreach { case (from, to) =>
+          WirelessConnectionRenderer.unpinConnection(from, to)
+        }
+      connectionsList.foreach(_.doUnlink())
     } else {
       breakConnection()
-      getLink foreach { that =>
+      getLink.foreach { that =>
         this.link := None
         that.link := None
       }
     }
   }
 
-  def setupConnection(): Boolean = {
-    getLink foreach { that =>
+  private def setupConnection(): Boolean = {
+    getLink.foreach { that =>
       connection =
         AEApi.instance().createGridConnection(this.getNode, that.getNode)
       if (that.isHub) {
         that.connectionsList = that.connectionsList :+ this
+        WirelessConnectionRenderer.addActualHubConnection(
+          that.myPos,
+          this.myPos
+        )
       } else {
         that.connection = connection
       }
       val dx = this.xCoord - that.xCoord
       val dy = this.yCoord - that.yCoord
       val dz = this.zCoord - that.zCoord
-      // val power = cfg.powerBase + cfg.powerDistanceMultiplier * (dx * dx + dy * dy + dz * dz)
       val dist = math.sqrt(dx * dx + dy * dy + dz * dz)
       val power = cfg.powerBase + cfg.powerDistanceMultiplier * dist * math.log(
         dist * dist + 3
@@ -130,13 +152,7 @@ class TileWireless
         that.setHubPowerUse(power)
       }
       if (worldObj.blockExists(xCoord, yCoord, zCoord))
-        worldObj.setBlockMetadataWithNotify(
-          this.xCoord,
-          this.yCoord,
-          this.zCoord,
-          1,
-          3
-        )
+        worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, 1, 3)
       if (worldObj.blockExists(that.xCoord, that.yCoord, that.zCoord))
         worldObj.setBlockMetadataWithNotify(
           that.xCoord,
@@ -150,26 +166,26 @@ class TileWireless
     false
   }
 
-  def setHubPowerUse(power: Double): Unit = {
+  private def setHubPowerUse(power: Double): Unit = {
     hubPowerUsage += power
     this.setIdlePowerUse(hubPowerUsage)
   }
 
   def getHubChannels: Int = {
-    var channels = 0
-    connectionsList foreach { that =>
-      channels += that.connection.getUsedChannels
-    }
-    channels
+    connectionsList.map(_.connection.getUsedChannels).sum
   }
 
-  def breakConnection(): Unit = {
+  private def breakConnection(): Unit = {
     if (connection != null)
       connection.destroy()
     connection = null
-    getLink foreach { other =>
+    getLink.foreach { other =>
       if (other.isHub) {
         other.connectionsList = other.connectionsList.filterNot(_ == this)
+        WirelessConnectionRenderer.removeActualHubConnection(
+          other.myPos,
+          this.myPos
+        )
         other.setHubPowerUse(-getIdlePowerUsage)
         if (
           other.connectionsList.isEmpty && worldObj.blockExists(
@@ -216,8 +232,7 @@ class TileWireless
       x: Int,
       y: Int,
       z: Int
-  ): Boolean =
-    newBlock != BlockWireless
+  ): Boolean = newBlock != BlockWireless
 
   override def doSave(kind: UpdateKind.Value, t: NBTTagCompound): Unit = {
     super.doSave(kind, t)
@@ -284,5 +299,6 @@ class TileWireless
     this.getLink.foreach(te => te.customName = name)
     markDirty()
   }
+
   override def getActionableNode: IGridNode = this.node
 }
