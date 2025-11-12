@@ -16,7 +16,13 @@ import appeng.items.tools.quartz.ToolQuartzCuttingKnife
 import cpw.mods.fml.relauncher.{Side, SideOnly}
 import net.bdew.ae2stuff.misc.{BlockWrenchable, MachineMaterial}
 import net.bdew.lib.Misc
-import net.bdew.lib.block.{HasItemBlock, HasTE, ItemBlockTooltip, SimpleBlock}
+import net.bdew.lib.block.{
+  BlockRef,
+  HasItemBlock,
+  HasTE,
+  ItemBlockTooltip,
+  SimpleBlock
+}
 import net.minecraft.block.Block
 import net.minecraft.client.renderer.texture.IIconRegister
 import net.minecraft.creativetab.CreativeTabs
@@ -33,13 +39,14 @@ object BlockWireless
     with HasTE[TileWireless]
     with BlockWrenchable
     with HasItemBlock {
+
   override val TEClass = classOf[TileWireless]
   override val ItemBlockClass: Class[_ <: ItemBlockWireless] =
     classOf[ItemBlockWireless]
 
   setHardness(1)
 
-  var isHub = false;
+  var isHub = false
 
   override def getDrops(
       world: World,
@@ -62,7 +69,7 @@ object BlockWireless
         stack.setItemDamage(te.color.ordinal() + 1)
       }
     } else if (isHub) {
-      stack.setItemDamage(17);
+      stack.setItemDamage(17)
     }
     val drops = new util.ArrayList[ItemStack]()
     drops.add(stack)
@@ -111,9 +118,21 @@ object BlockWireless
       block: Block,
       meta: Int
   ): Unit = {
-    val te = getTE(world, x, y, z);
+    val pos = BlockRef(x, y, z)
+
+    WirelessConnectionRenderer.getPinnedConnections
+      .filter { case (from, to) => from == pos || to == pos }
+      .foreach { case (from, to) =>
+        WirelessConnectionRenderer.unpinConnection(from, to)
+      }
+
+    if (WirelessConnectionRenderer.isHubPinned(pos)) {
+      WirelessConnectionRenderer.unpinHub(pos)
+    }
+
+    val te = getTE(world, x, y, z)
     te.doUnlink()
-    isHub = te.isHub;
+    isHub = te.isHub
     super.breakBlock(world, x, y, z, block, meta)
   }
 
@@ -130,12 +149,12 @@ object BlockWireless
       te.placingPlayer = player.asInstanceOf[EntityPlayer]
     }
     if (stack != null) {
-      val itemDamage = stack.getItemDamage
+      val itemDamage = stack.getItemDamage()
       if (stack.hasDisplayName) {
         te.customName = stack.getDisplayName
       }
       if (itemDamage > 16) {
-        te.isHub = true;
+        te.isHub = true
         if (itemDamage == 17) {
           te.color = AEColor.values().apply(16)
         } else {
@@ -159,6 +178,55 @@ object BlockWireless
       zOffs: Float
   ): Boolean = {
     val item = player.getHeldItem
+    if (!player.isSneaking && item == null) {
+      val pos = BlockRef(x, y, z)
+      val tile = getTE(world, x, y, z)
+
+      if (tile.isHub) {
+        if (tile.connectionsList.nonEmpty) {
+          if (WirelessConnectionRenderer.isHubPinned(pos)) {
+            WirelessConnectionRenderer.unpinHub(pos)
+          } else {
+            WirelessConnectionRenderer.pinHub(pos)
+          }
+          return true
+        }
+      } else if (tile.link.isDefined) {
+        val otherPos = tile.link.get
+        val otherTile = tile.getLink
+
+        val connectedToHub = otherTile.exists(_.isHub)
+
+        if (connectedToHub) {
+          val hubPos = otherPos
+          if (WirelessConnectionRenderer.isHubPinned(hubPos)) {
+            WirelessConnectionRenderer.unpinHub(hubPos)
+          } else {
+            WirelessConnectionRenderer.pinHub(hubPos)
+          }
+        } else {
+          val connectionPair =
+            if (pos.hashCode < otherPos.hashCode) (pos, otherPos)
+            else (otherPos, pos)
+
+          if (
+            WirelessConnectionRenderer.findConnection(pos, otherPos).isDefined
+          ) {
+            WirelessConnectionRenderer.unpinConnection(
+              connectionPair._1,
+              connectionPair._2
+            )
+          } else {
+            WirelessConnectionRenderer.pinConnection(
+              connectionPair._1,
+              connectionPair._2
+            )
+          }
+        }
+        return true
+      }
+    }
+
     if (item != null && item.getItem.isInstanceOf[ToolQuartzCuttingKnife]) {
       val te = world.getTileEntity(x, y, z)
       if (te.isInstanceOf[TileWireless]) {
@@ -173,6 +241,7 @@ object BlockWireless
         return true
       }
     }
+
     false
   }
 
@@ -232,7 +301,6 @@ object BlockWireless
 }
 
 class ItemBlockWireless(b: Block) extends ItemBlockTooltip(b) {
-
   setHasSubtypes(true)
 
   override def addInformation(
@@ -242,7 +310,7 @@ class ItemBlockWireless(b: Block) extends ItemBlockTooltip(b) {
       advanced: Boolean
   ): Unit = {
     super.addInformation(stack, player, list, advanced)
-    val itemDamage = stack.getItemDamage
+    val itemDamage = stack.getItemDamage()
     if (itemDamage == 17) {
       list
         .asInstanceOf[util.List[String]]
@@ -263,9 +331,7 @@ class ItemBlockWireless(b: Block) extends ItemBlockTooltip(b) {
       list
         .asInstanceOf[util.List[String]]
         .add(
-          Misc.toLocal(
-            AEColor.values().apply(itemDamage - 1).unlocalizedName
-          )
+          Misc.toLocal(AEColor.values().apply(itemDamage - 1).unlocalizedName)
         )
     }
   }
