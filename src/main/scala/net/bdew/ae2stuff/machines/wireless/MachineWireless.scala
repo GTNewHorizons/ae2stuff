@@ -13,5 +13,6 @@ import net.bdew.lib.machine.Machine
 
 object MachineWireless extends Machine("Wireless", BlockWireless) {
   lazy val powerBase: Double = tuning.getDouble("PowerBase")
-  lazy val powerDistanceMultiplier: Double = tuning.getDouble("PowerDistanceMultiplier")
+  lazy val powerDistanceMultiplier: Double =
+    tuning.getDouble("PowerDistanceMultiplier")
 }

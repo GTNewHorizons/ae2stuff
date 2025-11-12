@@ -52,9 +52,11 @@ class TileWireless
   private var hubPowerUsage = 0d
 
   def isLinked: Boolean = link.isDefined
-  def getLink: Option[TileWireless] = link.flatMap(_.getTile[TileWireless](worldObj))
+  def getLink: Option[TileWireless] =
+    link.flatMap(_.getTile[TileWireless](worldObj))
 
-  override def getFlags: util.EnumSet[GridFlags] = util.EnumSet.of(GridFlags.DENSE_CAPACITY)
+  override def getFlags: util.EnumSet[GridFlags] =
+    util.EnumSet.of(GridFlags.DENSE_CAPACITY)
 
   serverTick.listen(() => {
     if (connection == null && link.isDefined) {
