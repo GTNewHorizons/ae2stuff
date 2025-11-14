@@ -217,7 +217,8 @@ object VisualiserOverlayRender extends WorldOverlayRenderer {
         case VisualisationModes.CHANNELS =>
           !link.flags.contains(VLinkFlags.PROXY)
         case VisualisationModes.NONUM => !link.flags.contains(VLinkFlags.PROXY)
-        case VisualisationModes.ONECHANNEL => isLocPartOfLink(link, loc) && !isLinkBetweenAdjacentBlocks(link)
+        case VisualisationModes.ONECHANNEL =>
+          isLocPartOfLink(link, loc) && !isLinkBetweenAdjacentBlocks(link)
         case VisualisationModes.P2P =>
           link.flags.contains(VLinkFlags.COMPRESSED)
         case VisualisationModes.PROXY => link.flags.contains(VLinkFlags.PROXY)
