@@ -62,6 +62,7 @@ ae2stuff.visualiser.mode.full=Show Everything
 ae2stuff.visualiser.mode.nodes=Show Nodes
 ae2stuff.visualiser.mode.channels=Show Channels
 ae2stuff.visualiser.mode.nonum=Show Channels and Nodes
+ae2stuff.visualiser.mode.onechannel=Show Nodes and one Channel
 ae2stuff.visualiser.mode.p2p=Show P2P Links
 ae2stuff.visualiser.mode.proxy=Show Crafting Input Proxy Links
 
