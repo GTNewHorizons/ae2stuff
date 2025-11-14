@@ -43,10 +43,10 @@ object VisualiserOverlayRender extends WorldOverlayRenderer {
       node <- currentLinks.nodes if (mode match {
         case VisualisationModes.NODES => !node.flags.contains(VNodeFlags.PROXY)
         case VisualisationModes.CHANNELS => false
-        case VisualisationModes.NONUM => !node.flags.contains(VNodeFlags.PROXY)
-        case VisualisationModes.P2P   => false
-        case VisualisationModes.PROXY => node.flags.contains(VNodeFlags.PROXY)
-        case _                        => true
+        case VisualisationModes.NO_NUM => !node.flags.contains(VNodeFlags.PROXY)
+        case VisualisationModes.P2P    => false
+        case VisualisationModes.PROXY  => node.flags.contains(VNodeFlags.PROXY)
+        case _                         => true
       })
     ) {
       val color =
@@ -216,8 +216,8 @@ object VisualiserOverlayRender extends WorldOverlayRenderer {
         case VisualisationModes.NODES => false
         case VisualisationModes.CHANNELS =>
           !link.flags.contains(VLinkFlags.PROXY)
-        case VisualisationModes.NONUM => !link.flags.contains(VLinkFlags.PROXY)
-        case VisualisationModes.ONECHANNEL =>
+        case VisualisationModes.NO_NUM => !link.flags.contains(VLinkFlags.PROXY)
+        case VisualisationModes.NODES_ONE_CHANNEL | VisualisationModes.ONE_CHANNEL =>
           isLocPartOfLink(link, loc) && !isLinkBetweenAdjacentBlocks(link)
         case VisualisationModes.P2P =>
           link.flags.contains(VLinkFlags.COMPRESSED)
@@ -267,15 +267,16 @@ object VisualiserOverlayRender extends WorldOverlayRenderer {
   val renderNodesModes = Set(
     VisualisationModes.NODES,
     VisualisationModes.FULL,
-    VisualisationModes.NONUM,
-    VisualisationModes.ONECHANNEL,
+    VisualisationModes.NO_NUM,
+    VisualisationModes.NODES_ONE_CHANNEL,
     VisualisationModes.PROXY
   )
   val renderLinksModes = Set(
     VisualisationModes.CHANNELS,
     VisualisationModes.FULL,
-    VisualisationModes.NONUM,
-    VisualisationModes.ONECHANNEL,
+    VisualisationModes.NO_NUM,
+    VisualisationModes.NODES_ONE_CHANNEL,
+    VisualisationModes.ONE_CHANNEL,
     VisualisationModes.P2P,
     VisualisationModes.PROXY
   )
