@@ -2,7 +2,7 @@
 
 dependencies {
 
-    api('com.github.GTNewHorizons:Applied-Energistics-2-Unofficial:rv3-betea-777-GTNH:dev')
+    api('com.github.GTNewHorizons:Applied-Energistics-2-Unofficial:rv3-beta-777-GTNH:dev')
     api('com.github.GTNewHorizons:bdlib:1.11.0-GTNH:dev')
     api('com.github.GTNewHorizons:GTNHLib:0.9.0:dev')
     api('com.github.GTNewHorizons:Baubles-Expanded:2.2.6-GTNH:api')
