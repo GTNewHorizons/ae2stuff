@@ -3,6 +3,10 @@ tile.ae2stuff.Grower.name=晶体催生仓
 tile.ae2stuff.Inscriber.name=高级压印器
 tile.ae2stuff.Wireless.name=无线接入器 
 
+gui.ae2stuff.Encoder.title=样板编码台
+gui.ae2stuff.Grower.title=晶体催生仓
+gui.ae2stuff.Inscriber.title=高级压印器
+
 item.ae2stuff.WirelessKit.name=无线设置工具
 item.ae2stuff.Visualiser.name=网络可视化工具
 

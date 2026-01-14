@@ -3,6 +3,10 @@ tile.ae2stuff.Grower.name=Chambre de croissance du crystal
 tile.ae2stuff.Inscriber.name=Inscriveur avancé
 tile.ae2stuff.Wireless.name=Connecteur sans-fil
 
+gui.ae2stuff.Encoder.title=Encodeur de modèle
+gui.ae2stuff.Grower.title=Chambre de croissance du crystal
+gui.ae2stuff.Inscriber.title=Inscriveur avancé
+
 item.ae2stuff.WirelessKit.name=kit de configuration sans-fil
 item.ae2stuff.Visualiser.name=Outils de visualisation du réseau
 

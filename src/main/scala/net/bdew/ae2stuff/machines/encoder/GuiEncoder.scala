@@ -20,7 +20,12 @@ class GuiEncoder(cont: ContainerEncoder) extends BaseScreen(cont, 176, 166) {
   override def initGui(): Unit = {
     super.initGui()
     widgets.add(
-      new WidgetLabel(BlockEncoder.getLocalizedName, 8, 6, Color.darkGray)
+      new WidgetLabel(
+        Misc.toLocal("gui.ae2stuff.Encoder.title"),
+        8,
+        6,
+        Color.darkGray
+      )
     )
     widgets.add(
       new WidgetLabel(

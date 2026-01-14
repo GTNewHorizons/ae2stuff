@@ -4,6 +4,10 @@ tile.ae2stuff.Grower.name=クリスタル成長機
 tile.ae2stuff.Inscriber.name=発展型刻印機
 tile.ae2stuff.Wireless.name=無線コネクタ
 
+gui.ae2stuff.Encoder.title=パターンエンコーダ
+gui.ae2stuff.Grower.title=クリスタル成長機
+gui.ae2stuff.Inscriber.title=発展型刻印機
+
 item.ae2stuff.WirelessKit.name=無線設定キット
 item.ae2stuff.Visualiser.name=ネットワーク可視化ツール
 

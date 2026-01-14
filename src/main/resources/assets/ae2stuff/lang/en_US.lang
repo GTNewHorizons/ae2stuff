@@ -4,6 +4,10 @@ tile.ae2stuff.Inscriber.name=Advanced Inscriber
 tile.ae2stuff.Wireless.name=Wireless Connector
 tile.ae2stuff.WirelessHub.name=Wireless Hub
 
+gui.ae2stuff.Encoder.title=Pattern Encoder
+gui.ae2stuff.Grower.title=Crystal Growth Chamber
+gui.ae2stuff.Inscriber.title=Advanced Inscriber
+
 item.ae2stuff.WirelessKit.name=Wireless Setup Kit
 item.ae2stuff.AdvWirelessKit.name=Advanced Wireless Setup Kit
 item.ae2stuff.Visualiser.name=Network Visualisation Tool
