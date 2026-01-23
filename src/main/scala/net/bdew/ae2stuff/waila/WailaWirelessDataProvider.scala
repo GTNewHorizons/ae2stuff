@@ -54,7 +54,8 @@ object WailaWirelessDataProvider
       val data = NBT(
         "channels" -> te.getHubChannels,
         "color" -> te.color.ordinal(),
-        "power" -> PowerMultiplier.CONFIG.multiply(te.getIdlePowerUsage))
+        "power" -> PowerMultiplier.CONFIG.multiply(te.getIdlePowerUsage)
+      )
       val links = new NBTTagCompound
       var idx = 0
 
@@ -132,18 +133,18 @@ object WailaWirelessDataProvider
       val data = acc.getNBTData.getCompoundTag("wirelesshub_waila")
       val name = if (data.hasKey("name")) data.getString("name") else null
       val color = data.getInteger("color")
-    val base =
-      List(
-        Misc.toLocalF("tile.ae2stuff.WirelessHub.name"),
-        Misc.toLocalF(
-          "ae2stuff.waila.wireless.channels",
-          data.getInteger("channels")
-        ),
-        Misc.toLocalF(
-          "ae2stuff.waila.wireless.power",
-          DecFormat.short(data.getDouble("power"))
+      val base =
+        List(
+          Misc.toLocalF("tile.ae2stuff.WirelessHub.name"),
+          Misc.toLocalF(
+            "ae2stuff.waila.wireless.channels",
+            data.getInteger("channels")
+          ),
+          Misc.toLocalF(
+            "ae2stuff.waila.wireless.power",
+            DecFormat.short(data.getDouble("power"))
+          )
         )
-      )
 
       val links =
         if (data.hasKey("links")) {
@@ -163,7 +164,7 @@ object WailaWirelessDataProvider
         } else Nil
 
       base
-      .++(links)
+        .++(links)
         .++(if (name != null) {
           Misc.toLocalF("ae2stuff.waila.wireless.name", name) :: Nil
         } else Nil)
