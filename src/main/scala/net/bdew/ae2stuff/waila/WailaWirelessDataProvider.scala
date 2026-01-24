@@ -20,6 +20,7 @@ import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.world.World
+import scala.collection.JavaConverters.asScalaSetConverter
 
 object WailaWirelessDataProvider
     extends BaseDataProvider(classOf[TileWireless]) {
@@ -55,6 +56,23 @@ object WailaWirelessDataProvider
         "color" -> te.color.ordinal(),
         "power" -> PowerMultiplier.CONFIG.multiply(te.getIdlePowerUsage)
       )
+      val links = new NBTTagCompound
+      var idx = 0
+
+      te.connectionsList.foreach { that =>
+        if (that != null && that.connection != null) {
+          val linkTag = NBT(
+            "x" -> that.xCoord,
+            "y" -> that.yCoord,
+            "z" -> that.zCoord,
+            "channels" -> that.connection.getUsedChannels
+          )
+          links.setTag(idx.toString, linkTag)
+          idx += 1
+        }
+      }
+
+      data.setTag("links", links)
       if (te.hasCustomName) {
         data.setString("name", te.customName)
       }
@@ -115,17 +133,38 @@ object WailaWirelessDataProvider
       val data = acc.getNBTData.getCompoundTag("wirelesshub_waila")
       val name = if (data.hasKey("name")) data.getString("name") else null
       val color = data.getInteger("color")
-      List(
-        Misc.toLocalF("tile.ae2stuff.WirelessHub.name"),
-        Misc.toLocalF(
-          "ae2stuff.waila.wireless.channels",
-          data.getInteger("channels")
-        ),
-        Misc.toLocalF(
-          "ae2stuff.waila.wireless.power",
-          DecFormat.short(data.getDouble("power"))
+      val base =
+        List(
+          Misc.toLocalF("tile.ae2stuff.WirelessHub.name"),
+          Misc.toLocalF(
+            "ae2stuff.waila.wireless.channels",
+            data.getInteger("channels")
+          ),
+          Misc.toLocalF(
+            "ae2stuff.waila.wireless.power",
+            DecFormat.short(data.getDouble("power"))
+          )
         )
-      )
+
+      val links =
+        if (data.hasKey("links")) {
+          val linksTag = data.getCompoundTag("links")
+          linksTag.func_150296_c().asScala.toList.flatMap { key =>
+            val link = linksTag.getCompoundTag(key.asInstanceOf[String])
+            Some(
+              Misc.toLocalF(
+                "ae2stuff.waila.wireless.channel.used",
+                link.getInteger("x"),
+                link.getInteger("y"),
+                link.getInteger("z"),
+                link.getInteger("channels")
+              )
+            )
+          }
+        } else Nil
+
+      base
+        .++(links)
         .++(if (name != null) {
           Misc.toLocalF("ae2stuff.waila.wireless.name", name) :: Nil
         } else Nil)
