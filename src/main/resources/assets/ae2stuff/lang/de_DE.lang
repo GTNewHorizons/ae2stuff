@@ -62,7 +62,7 @@ ae2stuff.visualiser.set=Modus eingestellt zu %s
 ae2stuff.visualiser.mode.full=Alles anzeigen
 ae2stuff.visualiser.mode.nodes=Knotenpunkte anzeigen
 ae2stuff.visualiser.mode.channels=Kanäle anzeigen
-ae2stuff.visualiser.mode.nonum=Kanäle und Knotenpunkte anzeigen
+ae2stuff.visualiser.mode.no_num=Kanäle und Knotenpunkte anzeigen
 ae2stuff.visualiser.mode.p2p=P2P-Verbindungen anzeigen
 
 itemGroup.bdew.ae2stuff=AE2 Stuff

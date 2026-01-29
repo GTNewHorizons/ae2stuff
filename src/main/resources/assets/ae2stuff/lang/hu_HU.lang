@@ -39,7 +39,7 @@ ae2stuff.visualiser.set=Mód átállítva a következőre %s
 ae2stuff.visualiser.mode.full=minden megjelenítése
 ae2stuff.visualiser.mode.nodes=Csomópontok megjelenítése
 ae2stuff.visualiser.mode.channels=Csatornák megjelenítése
-ae2stuff.visualiser.mode.nonum=Csatornák és csomópontok megjelenítése
+ae2stuff.visualiser.mode.no_num=Csatornák és csomópontok megjelenítése
 ae2stuff.visualiser.mode.p2p=P2P kapcsolatok megjelenítése
 
 itemGroup.bdew.ae2stuff=AE2 Stuff
