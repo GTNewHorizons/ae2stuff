@@ -23,7 +23,12 @@ class GuiGrower(cont: ContainerGrower)
   override def initGui(): Unit = {
     super.initGui()
     widgets.add(
-      new WidgetLabel(BlockGrower.getLocalizedName, 8, 6, Color.darkGray)
+      new WidgetLabel(
+        Misc.toLocal("gui.ae2stuff.Grower.title"),
+        8,
+        6,
+        Color.darkGray
+      )
     )
     widgets.add(
       new WidgetLabel(
