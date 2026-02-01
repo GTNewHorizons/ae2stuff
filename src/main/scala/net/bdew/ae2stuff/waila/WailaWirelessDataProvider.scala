@@ -54,7 +54,8 @@ object WailaWirelessDataProvider
       val data = NBT(
         "channels" -> te.getHubChannels,
         "color" -> te.color.ordinal(),
-        "power" -> PowerMultiplier.CONFIG.multiply(te.getIdlePowerUsage))
+        "power" -> PowerMultiplier.CONFIG.multiply(te.getIdlePowerUsage)
+      )
       val links = new NBTTagCompound
       var idx = 0
 
@@ -132,38 +133,58 @@ object WailaWirelessDataProvider
       val data = acc.getNBTData.getCompoundTag("wirelesshub_waila")
       val name = if (data.hasKey("name")) data.getString("name") else null
       val color = data.getInteger("color")
-    val base =
-      List(
-        Misc.toLocalF("tile.ae2stuff.WirelessHub.name"),
-        Misc.toLocalF(
-          "ae2stuff.waila.wireless.channels",
-          data.getInteger("channels")
-        ),
-        Misc.toLocalF(
-          "ae2stuff.waila.wireless.power",
-          DecFormat.short(data.getDouble("power"))
+      val base =
+        List(
+          Misc.toLocalF("tile.ae2stuff.WirelessHub.name"),
+          Misc.toLocalF(
+            "ae2stuff.waila.wireless.channels",
+            data.getInteger("channels")
+          ),
+          Misc.toLocalF(
+            "ae2stuff.waila.wireless.power",
+            DecFormat.short(data.getDouble("power"))
+          )
         )
-      )
 
       val links =
         if (data.hasKey("links")) {
           val linksTag = data.getCompoundTag("links")
-          linksTag.func_150296_c().asScala.toList.flatMap { key =>
-            val link = linksTag.getCompoundTag(key.asInstanceOf[String])
-            Some(
-              Misc.toLocalF(
-                "ae2stuff.waila.wireless.channel.used",
-                link.getInteger("x"),
-                link.getInteger("y"),
-                link.getInteger("z"),
-                link.getInteger("channels")
-              )
+          val sortedKeys = linksTag
+            .func_150296_c()
+            .asScala
+            .map(_.asInstanceOf[String])
+            .map(_.toInt)
+            .toList
+            .sorted
+
+          val allLinks = sortedKeys.map { idx =>
+            val link = linksTag.getCompoundTag(idx.toString)
+            Misc.toLocalF(
+              "ae2stuff.waila.wireless.channel.used",
+              link.getInteger("x"),
+              link.getInteger("y"),
+              link.getInteger("z"),
+              link.getInteger("channels")
             )
           }
+
+          val isSneaking = acc.getPlayer.isSneaking
+          val maxNormal = 4
+
+          val displayedLinks =
+            if (isSneaking || allLinks.length <= maxNormal)
+              allLinks
+            else
+              allLinks.take(maxNormal)
+
+          if (!isSneaking && allLinks.length > maxNormal)
+            displayedLinks :+ Misc.toLocal("ae2stuff.waila.wireless.sneak.info")
+          else
+            displayedLinks
         } else Nil
 
       base
-      .++(links)
+        .++(links)
         .++(if (name != null) {
           Misc.toLocalF("ae2stuff.waila.wireless.name", name) :: Nil
         } else Nil)
