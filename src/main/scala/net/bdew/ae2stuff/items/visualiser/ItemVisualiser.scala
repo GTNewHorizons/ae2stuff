@@ -59,7 +59,7 @@ object ItemVisualiser extends SimpleItem("Visualiser") with ItemLocationStore {
             pos.x.toString,
             pos.y.toString,
             pos.z.toString
-          ).setColor(Color.GREEN)
+          )
         )
       }
     }
@@ -83,14 +83,9 @@ object ItemVisualiser extends SimpleItem("Visualiser") with ItemLocationStore {
       player.inventory.getCurrentItem != null && player.inventory.getCurrentItem.getItem == this
     ) {
       setMode(player.inventory.getCurrentItem, mode)
-
-      import net.bdew.lib.helpers.ChatHelper._
+      val modeName = Misc.toLocal("ae2stuff.visualiser.mode." + mode.toString.toLowerCase(Locale.US))
       player.addChatMessage(
-        L(
-          "ae2stuff.visualiser.set",
-          L("ae2stuff.visualiser.mode." + mode.toString.toLowerCase(Locale.US))
-            .setColor(Color.YELLOW)
-        )
+        Misc.toLocalF("ae2stuff.visualiser.set", modeName)
       )
     }
   }
@@ -203,17 +198,8 @@ object ItemVisualiser extends SimpleItem("Visualiser") with ItemLocationStore {
       extended: Boolean
   ): Unit = {
     val strings = list.asInstanceOf[util.List[String]]
-    strings.add(
-      "%s %s%s".format(
-        Misc.toLocal("ae2stuff.visualiser.mode"),
-        EnumChatFormatting.YELLOW,
-        Misc.toLocal(
-          "ae2stuff.visualiser.mode." + getMode(stack).toString.toLowerCase(
-            Locale.US
-          )
-        )
-      )
-    )
+    val modeKey = "ae2stuff.visualiser.mode." + getMode(stack).toString.toLowerCase(java.util.Locale.US)
+    val modeName = Misc.toLocal(modeKey)
+    strings.add(Misc.toLocalF("ae2stuff.visualiser.mode", modeName))
   }
-
 }
