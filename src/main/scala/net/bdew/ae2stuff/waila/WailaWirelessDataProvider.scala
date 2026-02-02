@@ -11,6 +11,7 @@ package net.bdew.ae2stuff.waila
 
 import appeng.api.config.PowerMultiplier
 import appeng.api.util.AEColor
+import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil.formatNumber
 import mcp.mobius.waila.api.{IWailaConfigHandler, IWailaDataAccessor}
 import net.bdew.ae2stuff.machines.wireless.TileWireless
 import net.bdew.lib.block.BlockRef
@@ -20,6 +21,7 @@ import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.world.World
+
 import scala.collection.JavaConverters.asScalaSetConverter
 
 object WailaWirelessDataProvider
@@ -111,7 +113,7 @@ object WailaWirelessDataProvider
           ),
           Misc.toLocalF(
             "ae2stuff.waila.wireless.power",
-            DecFormat.short(data.getDouble("power"))
+            formatNumber(data.getDouble("power"))
           )
         )
           .++(if (name != null) {
@@ -142,7 +144,7 @@ object WailaWirelessDataProvider
           ),
           Misc.toLocalF(
             "ae2stuff.waila.wireless.power",
-            DecFormat.short(data.getDouble("power"))
+            formatNumber(data.getDouble("power"))
           )
         )
 
