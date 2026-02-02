@@ -109,7 +109,7 @@ object WailaWirelessDataProvider
             .toLocalF("ae2stuff.waila.wireless.connected", pos.x, pos.y, pos.z),
           Misc.toLocalF(
             "ae2stuff.waila.wireless.channels",
-            data.getInteger("channels")
+              formatNumber(data.getInteger("channels"))
           ),
           Misc.toLocalF(
             "ae2stuff.waila.wireless.power",
@@ -140,7 +140,7 @@ object WailaWirelessDataProvider
           Misc.toLocalF("tile.ae2stuff.WirelessHub.name"),
           Misc.toLocalF(
             "ae2stuff.waila.wireless.channels",
-            data.getInteger("channels")
+            formatNumber(data.getInteger("channels"))
           ),
           Misc.toLocalF(
             "ae2stuff.waila.wireless.power",
@@ -163,10 +163,10 @@ object WailaWirelessDataProvider
             val link = linksTag.getCompoundTag(idx.toString)
             Misc.toLocalF(
               "ae2stuff.waila.wireless.channel.used",
-              link.getInteger("x"),
-              link.getInteger("y"),
-              link.getInteger("z"),
-              link.getInteger("channels")
+              formatNumber(link.getInteger("x")),
+              formatNumber(link.getInteger("y")),
+              formatNumber(link.getInteger("z")),
+              formatNumber(link.getInteger("channels"))
             )
           }
 
