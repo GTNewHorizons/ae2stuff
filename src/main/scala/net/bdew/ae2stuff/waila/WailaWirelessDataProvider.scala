@@ -106,7 +106,12 @@ object WailaWirelessDataProvider
         val pos = BlockRef.fromNBT(data.getCompoundTag("target"))
         List(
           Misc
-            .toLocalF("ae2stuff.waila.wireless.connected", pos.x, pos.y, pos.z),
+            .toLocalF(
+              "ae2stuff.waila.wireless.connected",
+              pos.x.toString,
+              pos.y.toString,
+              pos.z.toString
+            ),
           Misc.toLocalF(
             "ae2stuff.waila.wireless.channels",
             formatNumber(data.getInteger("channels"))

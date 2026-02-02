@@ -166,7 +166,12 @@ object ItemWirelessKit
     if (hasLocation(stack)) {
       val pos = getLocation(stack)
       list.add(
-        Misc.toLocalF("ae2stuff.wireless.tool.bound1", pos.x, pos.y, pos.z)
+        Misc.toLocalF(
+          "ae2stuff.wireless.tool.bound1",
+          pos.x.toString,
+          pos.y.toString,
+          pos.z.toString
+        )
       )
       list.add(Misc.toLocal("ae2stuff.wireless.tool.bound2"))
     } else {

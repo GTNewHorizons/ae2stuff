@@ -11,6 +11,7 @@ package net.bdew.ae2stuff.items
 
 import appeng.api.config.SecurityPermissions
 import appeng.api.exceptions.FailedConnection
+import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil.formatNumber
 import net.bdew.ae2stuff.AE2Stuff
 import net.bdew.ae2stuff.grid.Security
 import net.bdew.ae2stuff.machines.wireless.{BlockWireless, TileWireless}
@@ -274,9 +275,9 @@ object AdvWirelessKit
       list.add(
         Misc.toLocalF(
           "ae2stuff.wireless.advtool.connector.next",
-          next.x,
-          next.y,
-          next.z
+          next.x.toString,
+          next.y.toString,
+          next.z.toString
         )
       )
     }
@@ -311,9 +312,9 @@ object AdvWirelessKit
           list.add(
             Misc.toLocalF(
               "ae2stuff.wireless.tooltips.advtool.location",
-              loc.x,
-              loc.y,
-              loc.z
+              loc.x.toString,
+              loc.y.toString,
+              loc.z.toString
             )
           )
         }
