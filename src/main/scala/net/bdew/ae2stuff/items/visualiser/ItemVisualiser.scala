@@ -83,7 +83,9 @@ object ItemVisualiser extends SimpleItem("Visualiser") with ItemLocationStore {
       player.inventory.getCurrentItem != null && player.inventory.getCurrentItem.getItem == this
     ) {
       setMode(player.inventory.getCurrentItem, mode)
-      val modeName = Misc.toLocal("ae2stuff.visualiser.mode." + mode.toString.toLowerCase(Locale.US))
+      val modeName = Misc.toLocal(
+        "ae2stuff.visualiser.mode." + mode.toString.toLowerCase(Locale.US)
+      )
       player.addChatMessage(
         Misc.toLocalF("ae2stuff.visualiser.set", modeName)
       )
@@ -198,7 +200,8 @@ object ItemVisualiser extends SimpleItem("Visualiser") with ItemLocationStore {
       extended: Boolean
   ): Unit = {
     val strings = list.asInstanceOf[util.List[String]]
-    val modeKey = "ae2stuff.visualiser.mode." + getMode(stack).toString.toLowerCase(java.util.Locale.US)
+    val modeKey = "ae2stuff.visualiser.mode." + getMode(stack).toString
+      .toLowerCase(java.util.Locale.US)
     val modeName = Misc.toLocal(modeKey)
     strings.add(Misc.toLocalF("ae2stuff.visualiser.mode", modeName))
   }
