@@ -13,7 +13,6 @@ import java.util
 import java.util.Locale
 import appeng.api.networking.{GridFlags, IGridConnection, IGridHost}
 import appeng.me.GridNode
-import cpw.mods.fml.common.Loader
 import gregtech.common.tileentities.machines.MTEHatchCraftingInputME
 import net.bdew.ae2stuff.AE2Stuff
 import net.bdew.ae2stuff.misc.ItemLocationStore

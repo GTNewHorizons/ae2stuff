@@ -16,7 +16,7 @@ import mcp.mobius.waila.api.{IWailaConfigHandler, IWailaDataAccessor}
 import net.bdew.ae2stuff.machines.wireless.TileWireless
 import net.bdew.lib.block.BlockRef
 import net.bdew.lib.nbt.NBT
-import net.bdew.lib.{DecFormat, Misc}
+import net.bdew.lib.Misc
 import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound

@@ -11,7 +11,6 @@ package net.bdew.ae2stuff.items
 
 import appeng.api.config.SecurityPermissions
 import appeng.api.exceptions.FailedConnection
-import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil.formatNumber
 import net.bdew.ae2stuff.AE2Stuff
 import net.bdew.ae2stuff.grid.Security
 import net.bdew.ae2stuff.machines.wireless.{BlockWireless, TileWireless}
@@ -22,8 +21,6 @@ import net.bdew.lib.items.SimpleItem
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.ItemStack
 import net.minecraft.world.World
-import net.minecraft.client.resources.I18n
-import net.minecraft.client.settings.KeyBinding
 import net.minecraft.client.Minecraft
 import org.lwjgl.input.Keyboard
 
