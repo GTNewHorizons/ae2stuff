@@ -109,7 +109,7 @@ object WailaWirelessDataProvider
             .toLocalF("ae2stuff.waila.wireless.connected", pos.x, pos.y, pos.z),
           Misc.toLocalF(
             "ae2stuff.waila.wireless.channels",
-              formatNumber(data.getInteger("channels"))
+            formatNumber(data.getInteger("channels"))
           ),
           Misc.toLocalF(
             "ae2stuff.waila.wireless.power",
