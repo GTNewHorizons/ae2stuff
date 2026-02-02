@@ -2,14 +2,14 @@
 
 dependencies {
 
-    api('com.github.GTNewHorizons:Applied-Energistics-2-Unofficial:rv3-beta-700-GTNH:dev')
+    api('com.github.GTNewHorizons:Applied-Energistics-2-Unofficial:rv3-beta-809-GTNH:dev')
     api('com.github.GTNewHorizons:bdlib:1.11.0-GTNH:dev')
-    api('com.github.GTNewHorizons:GTNHLib:0.7.0:dev')
-    api('com.github.GTNewHorizons:Baubles-Expanded:2.2.0-GTNH:api')
+    api('com.github.GTNewHorizons:GTNHLib:0.9.6:dev')
+    api('com.github.GTNewHorizons:Baubles-Expanded:2.2.6-GTNH:api')
 
-    implementation('com.github.GTNewHorizons:waila:1.9.0:dev') {transitive=false}
+    implementation('com.github.GTNewHorizons:waila:1.19.21:dev') {transitive=false}
     
-    compileOnly('com.github.GTNewHorizons:NotEnoughItems:2.8.0-GTNH:dev')
-    compileOnly('com.github.GTNewHorizons:BuildCraft:7.1.44:dev')
-    compileOnly('com.github.GTNewHorizons:GT5-Unofficial:5.09.52.02:dev')
+    compileOnly('com.github.GTNewHorizons:NotEnoughItems:2.8.58-GTNH:dev')
+    compileOnly('com.github.GTNewHorizons:BuildCraft:7.1.51:dev')
+    compileOnly('com.github.GTNewHorizons:GT5-Unofficial:5.09.52.246:dev')
 }

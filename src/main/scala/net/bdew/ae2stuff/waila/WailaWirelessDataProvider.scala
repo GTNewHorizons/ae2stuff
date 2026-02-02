@@ -11,6 +11,7 @@ package net.bdew.ae2stuff.waila
 
 import appeng.api.config.PowerMultiplier
 import appeng.api.util.AEColor
+import com.gtnewhorizon.gtnhlib.util.numberformatting.NumberFormatUtil.formatNumber
 import mcp.mobius.waila.api.{IWailaConfigHandler, IWailaDataAccessor}
 import net.bdew.ae2stuff.machines.wireless.TileWireless
 import net.bdew.lib.block.BlockRef
@@ -20,6 +21,8 @@ import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.world.World
+
+import scala.collection.JavaConverters.asScalaSetConverter
 
 object WailaWirelessDataProvider
     extends BaseDataProvider(classOf[TileWireless]) {
@@ -55,6 +58,23 @@ object WailaWirelessDataProvider
         "color" -> te.color.ordinal(),
         "power" -> PowerMultiplier.CONFIG.multiply(te.getIdlePowerUsage)
       )
+      val links = new NBTTagCompound
+      var idx = 0
+
+      te.connectionsList.foreach { that =>
+        if (that != null && that.connection != null) {
+          val linkTag = NBT(
+            "x" -> that.xCoord,
+            "y" -> that.yCoord,
+            "z" -> that.zCoord,
+            "channels" -> that.connection.getUsedChannels
+          )
+          links.setTag(idx.toString, linkTag)
+          idx += 1
+        }
+      }
+
+      data.setTag("links", links)
       if (te.hasCustomName) {
         data.setString("name", te.customName)
       }
@@ -89,11 +109,11 @@ object WailaWirelessDataProvider
             .toLocalF("ae2stuff.waila.wireless.connected", pos.x, pos.y, pos.z),
           Misc.toLocalF(
             "ae2stuff.waila.wireless.channels",
-            data.getInteger("channels")
+            formatNumber(data.getInteger("channels"))
           ),
           Misc.toLocalF(
             "ae2stuff.waila.wireless.power",
-            DecFormat.short(data.getDouble("power"))
+            formatNumber(data.getDouble("power"))
           )
         )
           .++(if (name != null) {
@@ -115,17 +135,58 @@ object WailaWirelessDataProvider
       val data = acc.getNBTData.getCompoundTag("wirelesshub_waila")
       val name = if (data.hasKey("name")) data.getString("name") else null
       val color = data.getInteger("color")
-      List(
-        Misc.toLocalF("tile.ae2stuff.WirelessHub.name"),
-        Misc.toLocalF(
-          "ae2stuff.waila.wireless.channels",
-          data.getInteger("channels")
-        ),
-        Misc.toLocalF(
-          "ae2stuff.waila.wireless.power",
-          DecFormat.short(data.getDouble("power"))
+      val base =
+        List(
+          Misc.toLocalF("tile.ae2stuff.WirelessHub.name"),
+          Misc.toLocalF(
+            "ae2stuff.waila.wireless.channels",
+            formatNumber(data.getInteger("channels"))
+          ),
+          Misc.toLocalF(
+            "ae2stuff.waila.wireless.power",
+            formatNumber(data.getDouble("power"))
+          )
         )
-      )
+
+      val links =
+        if (data.hasKey("links")) {
+          val linksTag = data.getCompoundTag("links")
+          val sortedKeys = linksTag
+            .func_150296_c()
+            .asScala
+            .map(_.asInstanceOf[String])
+            .map(_.toInt)
+            .toList
+            .sorted
+
+          val allLinks = sortedKeys.map { idx =>
+            val link = linksTag.getCompoundTag(idx.toString)
+            Misc.toLocalF(
+              "ae2stuff.waila.wireless.channel.used",
+              formatNumber(link.getInteger("x")),
+              formatNumber(link.getInteger("y")),
+              formatNumber(link.getInteger("z")),
+              formatNumber(link.getInteger("channels"))
+            )
+          }
+
+          val isSneaking = acc.getPlayer.isSneaking
+          val maxNormal = 4
+
+          val displayedLinks =
+            if (isSneaking || allLinks.length <= maxNormal)
+              allLinks
+            else
+              allLinks.take(maxNormal)
+
+          if (!isSneaking && allLinks.length > maxNormal)
+            displayedLinks :+ Misc.toLocal("ae2stuff.waila.wireless.sneak.info")
+          else
+            displayedLinks
+        } else Nil
+
+      base
+        .++(links)
         .++(if (name != null) {
           Misc.toLocalF("ae2stuff.waila.wireless.name", name) :: Nil
         } else Nil)
