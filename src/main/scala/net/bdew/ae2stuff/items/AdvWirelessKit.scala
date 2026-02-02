@@ -67,7 +67,8 @@ object AdvWirelessKit
       toggleMode(stack)
       if (getMode(stack) == MODE_QUEUING) {
         player.addChatMessage(L("ae2stuff.wireless.advtool.queueing.activated"))
-      } else player.addChatMessage(L("ae2stuff.wireless.advtool.binding.activated"))
+      } else
+        player.addChatMessage(L("ae2stuff.wireless.advtool.binding.activated"))
     }
     stack
   }
@@ -98,9 +99,13 @@ object AdvWirelessKit
         }
         toggleMode(stack)
         if (getMode(stack) == MODE_QUEUING) {
-          player.addChatMessage(L("ae2stuff.wireless.advtool.queueing.activated"))
+          player.addChatMessage(
+            L("ae2stuff.wireless.advtool.queueing.activated")
+          )
         } else if (getMode(stack) == MODE_BINDING) {
-          player.addChatMessage(L("ae2stuff.wireless.advtool.binding.activated"))
+          player.addChatMessage(
+            L("ae2stuff.wireless.advtool.binding.activated")
+          )
         }
         return true;
       }
@@ -149,7 +154,10 @@ object AdvWirelessKit
                       pos.z.toString
                     )
                   )
-                } else player.addChatMessage(L("ae2stuff.wireless.advtool.queuederror"))
+                } else
+                  player.addChatMessage(
+                    L("ae2stuff.wireless.advtool.queuederror")
+                  )
               }
             }
           } else if (getMode(stack) == MODE_BINDING) {
@@ -192,8 +200,14 @@ object AdvWirelessKit
                           pid,
                           SecurityPermissions.BUILD
                         )
-                      ) player.addChatMessage(L("ae2stuff.wireless.tool.security.player"))
-                      else if (tile.isHub && other.isHub) player.addChatMessage(L("ae2stuff.wireless.tool.failed"))
+                      )
+                        player.addChatMessage(
+                          L("ae2stuff.wireless.tool.security.player")
+                        )
+                      else if (tile.isHub && other.isHub)
+                        player.addChatMessage(
+                          L("ae2stuff.wireless.tool.failed")
+                        )
                       else {
                         // Player can modify both sides - unlink current connections if any
                         if (!tile.isHub) tile.doUnlink()
@@ -205,16 +219,25 @@ object AdvWirelessKit
                         try {
                           if (tile.doLink(other)) {
                             player.addChatMessage(
-                              L("ae2stuff.wireless.tool.connected",
+                              L(
+                                "ae2stuff.wireless.tool.connected",
                                 pos.x.toString,
                                 pos.y.toString,
                                 pos.z.toString
                               )
                             )
-                          } else player.addChatMessage(L("ae2stuff.wireless.tool.failed"))
+                          } else
+                            player.addChatMessage(
+                              L("ae2stuff.wireless.tool.failed")
+                            )
                         } catch {
                           case e: FailedConnection =>
-                            player.addChatMessage(L("ae2stuff.wireless.tool.failed.detail", e.getMessage))
+                            player.addChatMessage(
+                              L(
+                                "ae2stuff.wireless.tool.failed.detail",
+                                e.getMessage
+                              )
+                            )
                             tile.doUnlink()
                             print("Failed to link wireless connector: " + e)
                         }
@@ -228,7 +251,10 @@ object AdvWirelessKit
                       popLocation(stack)
                   }
                 }
-              } else player.addChatMessage(L("ae2stuff.wireless.advtool.noconnectors"))
+              } else
+                player.addChatMessage(
+                  L("ae2stuff.wireless.advtool.noconnectors")
+                )
             }
           }
       }
@@ -282,7 +308,14 @@ object AdvWirelessKit
         list.add(Misc.toLocal("ae2stuff.wireless.advtool.binding.notempty"))
         for (i <- 0 until getLocations(stack).tagCount()) {
           val loc = BlockRef.fromNBT(getLocations(stack).getCompoundTagAt(i))
-          list.add(Misc.toLocalF("ae2stuff.wireless.tooltips.advtool.location", loc.x, loc.y, loc.z))
+          list.add(
+            Misc.toLocalF(
+              "ae2stuff.wireless.tooltips.advtool.location",
+              loc.x,
+              loc.y,
+              loc.z
+            )
+          )
         }
       }
       list.add(

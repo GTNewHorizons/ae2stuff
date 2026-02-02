@@ -91,12 +91,18 @@ object ItemWirelessKit
                     pid,
                     SecurityPermissions.BUILD
                   )
-                ) player.addChatMessage(L("ae2stuff.wireless.tool.security.player"))
+                )
+                  player.addChatMessage(
+                    L("ae2stuff.wireless.tool.security.player")
+                  )
                 else if (tile.isHub && other.isHub)
                   player.addChatMessage(L("ae2stuff.wireless.tool.failed"))
                 else if (
                   tile.connectionsList.length == 32 || other.connectionsList.length == 32
-                ) player.addChatMessage(L("ae2stuff.wireless.tool.targethubfull"))
+                )
+                  player.addChatMessage(
+                    L("ae2stuff.wireless.tool.targethubfull")
+                  )
                 else {
                   // Player can modify both sides - unlink current connections if any
                   if (!tile.isHub) tile.doUnlink()
@@ -115,10 +121,13 @@ object ItemWirelessKit
                           pos.z.toString
                         )
                       )
-                    } else player.addChatMessage(L("ae2stuff.wireless.tool.failed"))
+                    } else
+                      player.addChatMessage(L("ae2stuff.wireless.tool.failed"))
                   } catch {
                     case e: FailedConnection =>
-                      player.addChatComponentMessage(L("ae2stuff.wireless.tool.failed.detail",e.getMessage))
+                      player.addChatComponentMessage(
+                        L("ae2stuff.wireless.tool.failed.detail", e.getMessage)
+                      )
                       tile.doUnlink()
                       print("Failed to link wireless connector: " + e)
                   }
