@@ -319,7 +319,7 @@ class ItemBlockWireless(b: Block) extends ItemBlockTooltip(b) {
         .add(Misc.toLocal("tile.ae2stuff.WirelessHub.name"))
       list
         .asInstanceOf[util.List[String]]
-        .add(Misc.toLocal(AEColor.values().apply(16).unlocalizedName))
+        .add(Misc.toLocal(AEColor.Transparent.unlocalizedName))
     } else if (itemDamage > 16) {
       list
         .asInstanceOf[util.List[String]]
@@ -329,7 +329,10 @@ class ItemBlockWireless(b: Block) extends ItemBlockTooltip(b) {
         .add(
           Misc.toLocal(AEColor.values().apply(itemDamage - 18).unlocalizedName)
         )
-    } else if (itemDamage > 0) {
+    } else {
+      val color =
+        if (itemDamage == 0) AEColor.Transparent
+        else AEColor.values().apply(itemDamage - 1)
       list
         .asInstanceOf[util.List[String]]
         .add(
