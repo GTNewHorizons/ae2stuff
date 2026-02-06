@@ -43,7 +43,7 @@ ae2stuff.visualiser.set=Mode changé en %s
 ae2stuff.visualiser.mode.full=Tout afficher
 ae2stuff.visualiser.mode.nodes=Afficher les noeuds
 ae2stuff.visualiser.mode.channels=Afficher les canaux
-ae2stuff.visualiser.mode.nonum=Afficher les cannaux et le noeud
+ae2stuff.visualiser.mode.no_num=Afficher les cannaux et le noeud
 ae2stuff.visualiser.mode.p2p=Afficher les lien P2P
 
 itemGroup.bdew.ae2stuff=AE2 Stuff
