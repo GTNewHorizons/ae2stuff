@@ -13,6 +13,7 @@ import net.bdew.ae2stuff.items.visualiser
 import net.bdew.ae2stuff.misc.{OverlayRenderHandler, WorldOverlayRenderer}
 import net.bdew.ae2stuff.network.{MsgVisualisationData, NetHandler}
 import net.bdew.lib.Client
+import net.bdew.lib.block.BlockRef
 import net.minecraft.client.renderer.Tessellator
 import org.lwjgl.opengl.GL11
 
@@ -42,10 +43,10 @@ object VisualiserOverlayRender extends WorldOverlayRenderer {
       node <- currentLinks.nodes if (mode match {
         case VisualisationModes.NODES => !node.flags.contains(VNodeFlags.PROXY)
         case VisualisationModes.CHANNELS => false
-        case VisualisationModes.NONUM => !node.flags.contains(VNodeFlags.PROXY)
-        case VisualisationModes.P2P   => false
-        case VisualisationModes.PROXY => node.flags.contains(VNodeFlags.PROXY)
-        case _                        => true
+        case VisualisationModes.NO_NUM => !node.flags.contains(VNodeFlags.PROXY)
+        case VisualisationModes.P2P    => false
+        case VisualisationModes.PROXY  => node.flags.contains(VNodeFlags.PROXY)
+        case _                         => true
       })
     ) {
       val color =
@@ -203,7 +204,8 @@ object VisualiserOverlayRender extends WorldOverlayRenderer {
   def renderLinks(
       links: Seq[VLink],
       width: Float,
-      mode: VisualisationModes.Value
+      mode: VisualisationModes.Value,
+      loc: BlockRef
   ): Unit = {
     GL11.glLineWidth(width)
     val tess = Tessellator.instance
@@ -214,7 +216,10 @@ object VisualiserOverlayRender extends WorldOverlayRenderer {
         case VisualisationModes.NODES => false
         case VisualisationModes.CHANNELS =>
           !link.flags.contains(VLinkFlags.PROXY)
-        case VisualisationModes.NONUM => !link.flags.contains(VLinkFlags.PROXY)
+        case VisualisationModes.NO_NUM => !link.flags.contains(VLinkFlags.PROXY)
+        case VisualisationModes.NODES_ONE_CHANNEL |
+            VisualisationModes.ONE_CHANNEL =>
+          isLocPartOfLink(link, loc) && !isLinkBetweenAdjacentBlocks(link)
         case VisualisationModes.P2P =>
           link.flags.contains(VLinkFlags.COMPRESSED)
         case VisualisationModes.PROXY => link.flags.contains(VLinkFlags.PROXY)
@@ -246,16 +251,33 @@ object VisualiserOverlayRender extends WorldOverlayRenderer {
     tess.draw()
   }
 
+  private def isLinkBetweenAdjacentBlocks(link: VLink): Boolean = {
+    val dx = math.abs(link.node1.x - link.node2.x)
+    val dy = math.abs(link.node1.y - link.node2.y)
+    val dz = math.abs(link.node1.z - link.node2.z)
+
+    (dx + dy + dz) == 1
+  }
+
+  private def isLocPartOfLink(link: VLink, loc: BlockRef) =
+    isNodeLoc(link.node1, loc) || isNodeLoc(link.node2, loc)
+
+  private def isNodeLoc(vnode: VNode, loc: BlockRef): Boolean =
+    vnode.x == loc.x && vnode.y == loc.y && vnode.z == loc.z
+
   val renderNodesModes = Set(
     VisualisationModes.NODES,
     VisualisationModes.FULL,
-    VisualisationModes.NONUM,
+    VisualisationModes.NO_NUM,
+    VisualisationModes.NODES_ONE_CHANNEL,
     VisualisationModes.PROXY
   )
   val renderLinksModes = Set(
     VisualisationModes.CHANNELS,
     VisualisationModes.FULL,
-    VisualisationModes.NONUM,
+    VisualisationModes.NO_NUM,
+    VisualisationModes.NODES_ONE_CHANNEL,
+    VisualisationModes.ONE_CHANNEL,
     VisualisationModes.P2P,
     VisualisationModes.PROXY
   )
@@ -280,6 +302,7 @@ object VisualiserOverlayRender extends WorldOverlayRenderer {
     }
 
     val mode = ItemVisualiser.getMode(stack)
+    val loc = ItemVisualiser.getLocation(stack)
 
     GL11.glPushAttrib(GL11.GL_ENABLE_BIT)
 
@@ -298,8 +321,8 @@ object VisualiserOverlayRender extends WorldOverlayRenderer {
       GL11.glHint(GL11.GL_LINE_SMOOTH_HINT, GL11.GL_NICEST)
 
       if (renderLinksModes.contains(mode)) {
-        renderLinks(dense, 16f, mode)
-        renderLinks(normal, 4f, mode)
+        renderLinks(dense, 16f, mode, loc)
+        renderLinks(normal, 4f, mode, loc)
       }
 
       GL11.glEndList()
