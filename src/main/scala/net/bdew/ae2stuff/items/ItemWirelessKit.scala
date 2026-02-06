@@ -67,24 +67,17 @@ object ItemWirelessKit
             pid,
             SecurityPermissions.BUILD
           )
-        ) {
-          player.addChatMessage(
-            L("ae2stuff.wireless.tool.security.player").setColor(Color.RED)
-          )
-        } else if (tile.isHub && tile.connectionsList.length == 32) {
-          player.addChatMessage(
-            L("ae2stuff.wireless.tool.targethubfull").setColor(Color.RED)
-          )
-        } else if (hasLocation(stack)) {
+        ) player.addChatMessage(L("ae2stuff.wireless.tool.security.player"))
+        else if (tile.isHub && tile.connectionsList.length == 32)
+          player.addChatMessage(L("ae2stuff.wireless.tool.targethubfull"))
+        else if (hasLocation(stack)) {
           // Have other location - start connecting
           val otherPos = getLocation(stack)
 
-          if (getDimension(stack) != world.provider.dimensionId) {
+          if (getDimension(stack) != world.provider.dimensionId)
             // Different dimensions - error out
-            player.addChatMessage(
-              L("ae2stuff.wireless.tool.dimension").setColor(Color.RED)
-            )
-          } else if (pos == otherPos) {
+            player.addChatMessage(L("ae2stuff.wireless.tool.dimension"))
+          else if (pos == otherPos) {
             // Same block - clear the location
             clearLocation(stack)
           } else {
@@ -98,25 +91,19 @@ object ItemWirelessKit
                     pid,
                     SecurityPermissions.BUILD
                   )
-                ) {
+                )
                   player.addChatMessage(
-                    L("ae2stuff.wireless.tool.security.player").setColor(
-                      Color.RED
-                    )
+                    L("ae2stuff.wireless.tool.security.player")
                   )
-                } else if (tile.isHub && other.isHub) {
-                  player.addChatMessage(
-                    L("ae2stuff.wireless.tool.failed").setColor(Color.RED)
-                  )
-                } else if (
+                else if (tile.isHub && other.isHub)
+                  player.addChatMessage(L("ae2stuff.wireless.tool.failed"))
+                else if (
                   tile.connectionsList.length == 32 || other.connectionsList.length == 32
-                ) {
+                )
                   player.addChatMessage(
-                    L("ae2stuff.wireless.tool.targethubfull").setColor(
-                      Color.RED
-                    )
+                    L("ae2stuff.wireless.tool.targethubfull")
                   )
-                } else {
+                else {
                   // Player can modify both sides - unlink current connections if any
                   if (!tile.isHub) tile.doUnlink()
                   if (!other.isHub) other.doUnlink()
@@ -132,19 +119,14 @@ object ItemWirelessKit
                           pos.x.toString,
                           pos.y.toString,
                           pos.z.toString
-                        ).setColor(Color.GREEN)
+                        )
                       )
-                    } else {
-                      player.addChatMessage(
-                        L("ae2stuff.wireless.tool.failed").setColor(Color.RED)
-                      )
-                    }
+                    } else
+                      player.addChatMessage(L("ae2stuff.wireless.tool.failed"))
                   } catch {
                     case e: FailedConnection =>
                       player.addChatComponentMessage(
-                        (L(
-                          "ae2stuff.wireless.tool.failed"
-                        ) & ": " & e.getMessage).setColor(Color.RED)
+                        L("ae2stuff.wireless.tool.failed.detail", e.getMessage)
                       )
                       tile.doUnlink()
                       print("Failed to link wireless connector: " + e)
@@ -153,9 +135,7 @@ object ItemWirelessKit
                 clearLocation(stack)
               case _ =>
                 // The other block is gone - error out
-                player.addChatMessage(
-                  L("ae2stuff.wireless.tool.noexist").setColor(Color.RED)
-                )
+                player.addChatMessage(L("ae2stuff.wireless.tool.noexist"))
                 clearLocation(stack)
             }
           }
@@ -167,7 +147,7 @@ object ItemWirelessKit
               pos.x.toString,
               pos.y.toString,
               pos.z.toString
-            ).setColor(Color.GREEN)
+            )
           )
           setLocation(stack, pos, world.provider.dimensionId)
         }
@@ -186,7 +166,12 @@ object ItemWirelessKit
     if (hasLocation(stack)) {
       val pos = getLocation(stack)
       list.add(
-        Misc.toLocalF("ae2stuff.wireless.tool.bound1", pos.x, pos.y, pos.z)
+        Misc.toLocalF(
+          "ae2stuff.wireless.tool.bound1",
+          pos.x.toString,
+          pos.y.toString,
+          pos.z.toString
+        )
       )
       list.add(Misc.toLocal("ae2stuff.wireless.tool.bound2"))
     } else {

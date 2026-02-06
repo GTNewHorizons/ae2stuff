@@ -21,8 +21,6 @@ import net.bdew.lib.items.SimpleItem
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.ItemStack
 import net.minecraft.world.World
-import net.minecraft.client.resources.I18n
-import net.minecraft.client.settings.KeyBinding
 import net.minecraft.client.Minecraft
 import org.lwjgl.input.Keyboard
 
@@ -61,25 +59,14 @@ object AdvWirelessKit
         while (hasLocation(stack)) {
           popLocation(stack)
         }
-        player.addChatMessage(
-          L("ae2stuff.wireless.advtool.queueing.clear").setColor(
-            Color.GREEN
-          )
-        )
+        player.addChatMessage(L("ae2stuff.wireless.advtool.queueing.clear"))
         return stack
       }
       toggleMode(stack)
       if (getMode(stack) == MODE_QUEUING) {
-        player.addChatMessage(
-          L("ae2stuff.wireless.advtool.queueing.activated").setColor(
-            Color.GREEN
-          )
-        )
-      } else {
-        player.addChatMessage(
-          L("ae2stuff.wireless.advtool.binding.activated").setColor(Color.GREEN)
-        )
-      }
+        player.addChatMessage(L("ae2stuff.wireless.advtool.queueing.activated"))
+      } else
+        player.addChatMessage(L("ae2stuff.wireless.advtool.binding.activated"))
     }
     stack
   }
@@ -105,25 +92,17 @@ object AdvWirelessKit
           while (hasLocation(stack)) {
             popLocation(stack)
           }
-          player.addChatMessage(
-            L("ae2stuff.wireless.advtool.queueing.clear").setColor(
-              Color.GREEN
-            )
-          )
+          player.addChatMessage(L("ae2stuff.wireless.advtool.queueing.clear"))
           return true
         }
         toggleMode(stack)
         if (getMode(stack) == MODE_QUEUING) {
           player.addChatMessage(
-            L("ae2stuff.wireless.advtool.queueing.activated").setColor(
-              Color.GREEN
-            )
+            L("ae2stuff.wireless.advtool.queueing.activated")
           )
         } else if (getMode(stack) == MODE_BINDING) {
           player.addChatMessage(
-            L("ae2stuff.wireless.advtool.binding.activated").setColor(
-              Color.GREEN
-            )
+            L("ae2stuff.wireless.advtool.binding.activated")
           )
         }
         return true;
@@ -138,11 +117,8 @@ object AdvWirelessKit
               pid,
               SecurityPermissions.BUILD
             )
-          ) {
-            player.addChatMessage(
-              L("ae2stuff.wireless.tool.security.player").setColor(Color.RED)
-            )
-          } else if (getMode(stack) == MODE_QUEUING) {
+          ) player.addChatMessage(L("ae2stuff.wireless.tool.security.player"))
+          else if (getMode(stack) == MODE_QUEUING) {
             var isHub = false;
             val tempTE =
               world
@@ -150,9 +126,7 @@ object AdvWirelessKit
                 .asInstanceOf[TileWireless]
             if (tempTE != null) {
               if (tempTE.connectionsList.length >= 32) {
-                player.addChatMessage(
-                  L("ae2stuff.wireless.tool.targethubfull").setColor(Color.RED)
-                )
+                player.addChatMessage(L("ae2stuff.wireless.tool.targethubfull"))
                 return true
               }
               isHub = tempTE.isHub
@@ -164,10 +138,7 @@ object AdvWirelessKit
                   i = i + 1
                 }
                 player.addChatMessage(
-                  L(
-                    "ae2stuff.wireless.advtool.hub.queued",
-                    i.toString
-                  ).setColor(Color.GREEN)
+                  L("ae2stuff.wireless.advtool.hub.queued", i.toString)
                 )
               } else {
                 if (
@@ -179,15 +150,12 @@ object AdvWirelessKit
                       pos.x.toString,
                       pos.y.toString,
                       pos.z.toString
-                    ).setColor(Color.GREEN)
-                  )
-                } else {
-                  player.addChatMessage(
-                    L("ae2stuff.wireless.advtool.queuederror").setColor(
-                      Color.RED
                     )
                   )
-                }
+                } else
+                  player.addChatMessage(
+                    L("ae2stuff.wireless.advtool.queuederror")
+                  )
               }
             }
           } else if (getMode(stack) == MODE_BINDING) {
@@ -205,9 +173,7 @@ object AdvWirelessKit
                     doLoop = true
                   } else if (tile.connectionsList.length == 32) {
                     player.addChatMessage(
-                      L("ae2stuff.wireless.tool.targethubfull").setColor(
-                        Color.RED
-                      )
+                      L("ae2stuff.wireless.tool.targethubfull")
                     )
                     return true
                   }
@@ -217,9 +183,7 @@ object AdvWirelessKit
 
                 if (getDimension(stack) != world.provider.dimensionId) {
                   // Different dimensions - error out
-                  player.addChatMessage(
-                    L("ae2stuff.wireless.tool.dimension").setColor(Color.RED)
-                  )
+                  player.addChatMessage(L("ae2stuff.wireless.tool.dimension"))
                 } else if (pos == otherPos) {
                   // Same block - clear the location
                   popLocation(stack)
@@ -234,17 +198,15 @@ object AdvWirelessKit
                           pid,
                           SecurityPermissions.BUILD
                         )
-                      ) {
+                      )
                         player.addChatMessage(
-                          L("ae2stuff.wireless.tool.security.player").setColor(
-                            Color.RED
-                          )
+                          L("ae2stuff.wireless.tool.security.player")
                         )
-                      } else if (tile.isHub && other.isHub) {
+                      else if (tile.isHub && other.isHub)
                         player.addChatMessage(
-                          L("ae2stuff.wireless.tool.failed").setColor(Color.RED)
+                          L("ae2stuff.wireless.tool.failed")
                         )
-                      } else {
+                      else {
                         // Player can modify both sides - unlink current connections if any
                         if (!tile.isHub) tile.doUnlink()
                         if (!other.isHub) other.doUnlink()
@@ -260,21 +222,19 @@ object AdvWirelessKit
                                 pos.x.toString,
                                 pos.y.toString,
                                 pos.z.toString
-                              ).setColor(Color.GREEN)
-                            )
-                          } else {
-                            player.addChatMessage(
-                              L("ae2stuff.wireless.tool.failed").setColor(
-                                Color.RED
                               )
                             )
-                          }
+                          } else
+                            player.addChatMessage(
+                              L("ae2stuff.wireless.tool.failed")
+                            )
                         } catch {
                           case e: FailedConnection =>
-                            player.addChatComponentMessage(
-                              (L(
-                                "ae2stuff.wireless.tool.failed"
-                              ) & ": " & e.getMessage).setColor(Color.RED)
+                            player.addChatMessage(
+                              L(
+                                "ae2stuff.wireless.tool.failed.detail",
+                                e.getMessage
+                              )
                             )
                             tile.doUnlink()
                             print("Failed to link wireless connector: " + e)
@@ -284,18 +244,15 @@ object AdvWirelessKit
                     case _ =>
                       // The other block is gone - error out
                       player.addChatMessage(
-                        L("ae2stuff.wireless.tool.noexist").setColor(Color.RED)
+                        L("ae2stuff.wireless.tool.noexist")
                       )
                       popLocation(stack)
                   }
                 }
-              } else {
+              } else
                 player.addChatMessage(
-                  L("ae2stuff.wireless.advtool.noconnectors").setColor(
-                    Color.RED
-                  )
+                  L("ae2stuff.wireless.advtool.noconnectors")
                 )
-              }
             }
           }
       }
@@ -315,9 +272,9 @@ object AdvWirelessKit
       list.add(
         Misc.toLocalF(
           "ae2stuff.wireless.advtool.connector.next",
-          next.x,
-          next.y,
-          next.z
+          next.x.toString,
+          next.y.toString,
+          next.z.toString
         )
       )
     }
@@ -333,7 +290,7 @@ object AdvWirelessKit
         }
       }
       list.add(
-        I18n.format(
+        Misc.toLocalF(
           "ae2stuff.wireless.tooltips.advtool.hubqols.queueing",
           Minecraft.getMinecraft.gameSettings.keyBindings
             .find(_.getKeyDescription == AE2Stuff.keybindModeId)
@@ -349,11 +306,18 @@ object AdvWirelessKit
         list.add(Misc.toLocal("ae2stuff.wireless.advtool.binding.notempty"))
         for (i <- 0 until getLocations(stack).tagCount()) {
           val loc = BlockRef.fromNBT(getLocations(stack).getCompoundTagAt(i))
-          list.add(loc.x + "," + loc.y + "," + loc.z)
+          list.add(
+            Misc.toLocalF(
+              "ae2stuff.wireless.tooltips.advtool.location",
+              loc.x.toString,
+              loc.y.toString,
+              loc.z.toString
+            )
+          )
         }
       }
       list.add(
-        I18n.format(
+        Misc.toLocalF(
           "ae2stuff.wireless.tooltips.advtool.hubqols.binding",
           Minecraft.getMinecraft.gameSettings.keyBindings
             .find(_.getKeyDescription == AE2Stuff.keybindModeId)
@@ -363,7 +327,7 @@ object AdvWirelessKit
       )
     }
     list.add(
-      I18n.format(
+      Misc.toLocalF(
         "ae2stuff.wireless.tooltips.advtool.queueing.clear",
         Minecraft.getMinecraft.gameSettings.keyBindings
           .find(_.getKeyDescription == AE2Stuff.keybindModeId)
