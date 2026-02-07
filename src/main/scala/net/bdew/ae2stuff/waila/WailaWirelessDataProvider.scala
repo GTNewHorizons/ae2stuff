@@ -16,7 +16,7 @@ import mcp.mobius.waila.api.{IWailaConfigHandler, IWailaDataAccessor}
 import net.bdew.ae2stuff.machines.wireless.TileWireless
 import net.bdew.lib.block.BlockRef
 import net.bdew.lib.nbt.NBT
-import net.bdew.lib.{DecFormat, Misc}
+import net.bdew.lib.Misc
 import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
@@ -106,7 +106,12 @@ object WailaWirelessDataProvider
         val pos = BlockRef.fromNBT(data.getCompoundTag("target"))
         List(
           Misc
-            .toLocalF("ae2stuff.waila.wireless.connected", pos.x, pos.y, pos.z),
+            .toLocalF(
+              "ae2stuff.waila.wireless.connected",
+              pos.x.toString,
+              pos.y.toString,
+              pos.z.toString
+            ),
           Misc.toLocalF(
             "ae2stuff.waila.wireless.channels",
             formatNumber(data.getInteger("channels"))

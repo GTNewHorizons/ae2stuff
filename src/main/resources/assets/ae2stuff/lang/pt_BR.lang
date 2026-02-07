@@ -2,6 +2,10 @@ tile.ae2stuff.Encoder.name=Codificador de Padrões
 tile.ae2stuff.Grower.name=Câmara de Crescimento de Cristais
 tile.ae2stuff.Inscriber.name=Inscritor Avançado
 
+gui.ae2stuff.Encoder.title=Codificador de Padrões
+gui.ae2stuff.Grower.title=Câmara de Crescimento de Cristais
+gui.ae2stuff.Inscriber.title=Inscritor Avançado
+
 ae2stuff.error.not_connected=Rede não conectada
 
 ae2stuff.waila.sleep.true=Dormindo
