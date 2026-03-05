@@ -14,8 +14,14 @@ import net.bdew.ae2stuff.misc.{OverlayRenderHandler, WorldOverlayRenderer}
 import net.bdew.ae2stuff.network.{MsgVisualisationData, NetHandler}
 import net.bdew.lib.Client
 import net.bdew.lib.block.BlockRef
+import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.Tessellator
 import net.minecraft.client.resources.I18n
+import net.minecraft.client.resources.{
+  IResourceManager,
+  IResourceManagerReloadListener,
+  IReloadableResourceManager
+}
 import org.lwjgl.opengl.GL11
 
 object VisualiserOverlayRender extends WorldOverlayRenderer {
@@ -56,6 +62,73 @@ object VisualiserOverlayRender extends WorldOverlayRenderer {
     else parseArgb(raw).getOrElse(default)
   }
 
+  private final val defaultNodeMissingColor = (255, 0, 0, 255)
+  private final val defaultNodeDenseColor = (255, 255, 0, 255)
+  private final val defaultNodeProxyColor = (255, 165, 0, 255)
+  private final val defaultNodeColor = (0, 0, 255, 255)
+  private final val defaultLinkCompressedColor = (255, 0, 255, 255)
+  private final val defaultLinkDenseColor = (255, 255, 0, 255)
+  private final val defaultLinkProxyColor = (255, 165, 0, 255)
+  private final val defaultLinkColor = (0, 0, 255, 255)
+
+  private var nodeMissingColor = defaultNodeMissingColor
+  private var nodeDenseColor = defaultNodeDenseColor
+  private var nodeProxyColor = defaultNodeProxyColor
+  private var nodeColor = defaultNodeColor
+  private var linkCompressedColor = defaultLinkCompressedColor
+  private var linkDenseColor = defaultLinkDenseColor
+  private var linkProxyColor = defaultLinkProxyColor
+  private var linkColor = defaultLinkColor
+
+  private def refreshColorsFromLang(): Unit = {
+    nodeMissingColor = colorFromLang(
+      "ae2stuff.visualiser.color.node.missing",
+      defaultNodeMissingColor
+    )
+    nodeDenseColor = colorFromLang(
+      "ae2stuff.visualiser.color.node.dense",
+      defaultNodeDenseColor
+    )
+    nodeProxyColor = colorFromLang(
+      "ae2stuff.visualiser.color.node.proxy",
+      defaultNodeProxyColor
+    )
+    nodeColor =
+      colorFromLang("ae2stuff.visualiser.color.node.default", defaultNodeColor)
+    linkCompressedColor = colorFromLang(
+      "ae2stuff.visualiser.color.link.compressed",
+      defaultLinkCompressedColor
+    )
+    linkDenseColor = colorFromLang(
+      "ae2stuff.visualiser.color.link.dense",
+      defaultLinkDenseColor
+    )
+    linkProxyColor = colorFromLang(
+      "ae2stuff.visualiser.color.link.proxy",
+      defaultLinkProxyColor
+    )
+    linkColor =
+      colorFromLang("ae2stuff.visualiser.color.link.default", defaultLinkColor)
+    needListRefresh = true
+  }
+
+  refreshColorsFromLang()
+
+  private val langReloadListener = new IResourceManagerReloadListener {
+    override def onResourceManagerReload(
+        resourceManager: IResourceManager
+    ): Unit =
+      refreshColorsFromLang()
+  }
+
+  def registerReloadListener(): Unit = {
+    Minecraft.getMinecraft.getResourceManager match {
+      case reloadable: IReloadableResourceManager =>
+        reloadable.registerReloadListener(langReloadListener)
+      case _ => ()
+    }
+  }
+
   private def shade(
       color: (Int, Int, Int, Int),
       num: Int,
@@ -93,25 +166,13 @@ object VisualiserOverlayRender extends WorldOverlayRenderer {
     ) {
       val color =
         if (node.flags.contains(VNodeFlags.MISSING))
-          colorFromLang(
-            "ae2stuff.visualiser.color.node.missing",
-            (255, 0, 0, 255)
-          )
+          nodeMissingColor
         else if (node.flags.contains(VNodeFlags.DENSE))
-          colorFromLang(
-            "ae2stuff.visualiser.color.node.dense",
-            (255, 255, 0, 255)
-          )
+          nodeDenseColor
         else if (node.flags.contains(VNodeFlags.PROXY))
-          colorFromLang(
-            "ae2stuff.visualiser.color.node.proxy",
-            (255, 165, 0, 255)
-          )
+          nodeProxyColor
         else
-          colorFromLang(
-            "ae2stuff.visualiser.color.node.default",
-            (0, 0, 255, 255)
-          )
+          nodeColor
 
       tess.setColorRGBA(color._1, color._2, color._3, color._4) // +Y
       tess.addVertex(
@@ -289,25 +350,13 @@ object VisualiserOverlayRender extends WorldOverlayRenderer {
     ) {
       val color =
         if (link.flags.contains(VLinkFlags.COMPRESSED))
-          colorFromLang(
-            "ae2stuff.visualiser.color.link.compressed",
-            (255, 0, 255, 255)
-          )
+          linkCompressedColor
         else if (link.flags.contains(VLinkFlags.DENSE))
-          colorFromLang(
-            "ae2stuff.visualiser.color.link.dense",
-            (255, 255, 0, 255)
-          )
+          linkDenseColor
         else if (link.flags.contains(VLinkFlags.PROXY))
-          colorFromLang(
-            "ae2stuff.visualiser.color.link.proxy",
-            (255, 165, 0, 255)
-          )
+          linkProxyColor
         else
-          colorFromLang(
-            "ae2stuff.visualiser.color.link.default",
-            (0, 0, 255, 255)
-          )
+          linkColor
       tess.setColorRGBA(color._1, color._2, color._3, color._4)
 
       tess.addVertex(

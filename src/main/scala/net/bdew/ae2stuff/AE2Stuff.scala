@@ -84,6 +84,7 @@ object AE2Stuff {
       Icons.init()
       OverlayRenderHandler.register(WirelessOverlayRender)
       OverlayRenderHandler.register(VisualiserOverlayRender)
+      VisualiserOverlayRender.registerReloadListener()
       MouseEventHandler.init()
     }
     VisualiserPlayerTracker.init()
