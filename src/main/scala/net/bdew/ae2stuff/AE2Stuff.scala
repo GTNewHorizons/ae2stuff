@@ -9,6 +9,7 @@
 
 package net.bdew.ae2stuff
 
+import com.gtnewhorizon.gtnhlib.config.ConfigurationManager
 import com.gtnewhorizon.gtnhlib.keybind.SyncedKeybind
 
 import java.io.File
@@ -46,6 +47,8 @@ object AE2Stuff {
   final val channel = "bdew.ae2stuff"
 
   var configDir: File = null
+
+  ConfigurationManager.registerConfig(classOf[Config])
 
   val guiHandler = new GuiHandler
   val keybindModeId = "ae2stuff.key.mode"

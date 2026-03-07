@@ -9,6 +9,7 @@
 
 package net.bdew.ae2stuff.items.visualiser
 
+import net.bdew.ae2stuff.Config
 import net.bdew.ae2stuff.items.visualiser
 import net.bdew.ae2stuff.misc.{OverlayRenderHandler, WorldOverlayRenderer}
 import net.bdew.ae2stuff.network.{MsgVisualisationData, NetHandler}
@@ -321,8 +322,8 @@ object VisualiserOverlayRender extends WorldOverlayRenderer {
       GL11.glHint(GL11.GL_LINE_SMOOTH_HINT, GL11.GL_NICEST)
 
       if (renderLinksModes.contains(mode)) {
-        renderLinks(dense, 16f, mode, loc)
-        renderLinks(normal, 4f, mode, loc)
+        renderLinks(dense, Config.visualiserWidthDense, mode, loc)
+        renderLinks(normal, Config.visualiserWidthNormal, mode, loc)
       }
 
       GL11.glEndList()
