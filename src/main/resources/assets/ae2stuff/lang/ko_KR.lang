@@ -1,4 +1,7 @@
 tile.ae2stuff.Encoder.name=패턴 인코더
 tile.ae2stuff.Grower.name=수정 성장 촉진기
 
+gui.ae2stuff.Encoder.title=패턴 인코더
+gui.ae2stuff.Grower.title=수정 성장 촉진기
+
 ae2stuff.error.not_connected=네트워크에 연결되어있지 않습니다.
