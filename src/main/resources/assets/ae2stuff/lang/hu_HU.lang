@@ -3,6 +3,10 @@ tile.ae2stuff.Grower.name=Kristály Növelő Kamra
 tile.ae2stuff.Inscriber.name=Fejlett Karcoló
 tile.ae2stuff.Wireless.name=Vezetéknélküli Csatlakozó
 
+gui.ae2stuff.Encoder.title=Minta Kódoló
+gui.ae2stuff.Grower.title=Kristály Növelő Kamra
+gui.ae2stuff.Inscriber.title=Fejlett Karcoló
+
 item.ae2stuff.WirelessKit.name=Wireless Setup Kit
 item.ae2stuff.Visualiser.name=Network Visualisation Tool
 

@@ -2,6 +2,9 @@
 tile.ae2stuff.Encoder.name=Codificatore di Modelli
 tile.ae2stuff.Grower.name=Camera per la crescita dei Cristalli
 
+gui.ae2stuff.Encoder.title=Codificatore di Modelli
+gui.ae2stuff.Grower.title=Camera per la crescita dei Cristalli
+
 ae2stuff.error.not_connected=Non connesso alla rete
 
 itemGroup.bdew.ae2stuff=AE2 Stuff

@@ -3,6 +3,10 @@ tile.ae2stuff.Grower.name=Kristallzuchtkammer
 tile.ae2stuff.Inscriber.name=Erweiterte Gravurmaschine
 tile.ae2stuff.Wireless.name=Drahtlosanschluss
 
+gui.ae2stuff.Encoder.title=Schablonenkodierer
+gui.ae2stuff.Grower.title=Kristallzuchtkammer
+gui.ae2stuff.Inscriber.title=Drweiterte Gravurmaschine
+
 item.ae2stuff.WirelessKit.name=Kabelloses Setup-Kit
 item.ae2stuff.AdvWirelessKit.name=Verbessertes kabelloses Setup-Kit
 item.ae2stuff.Visualiser.name=Netzwerk-Übersichtsgerät
