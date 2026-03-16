@@ -29,7 +29,7 @@ class GuiInscriber(cont: ContainerInscriber)
     super.initGui()
     widgets.add(
       new WidgetLabel(
-        Misc.toLocal("tile.ae2stuff.Inscriber.name"),
+        Misc.toLocal("gui.ae2stuff.Inscriber.title"),
         8,
         6,
         Color.darkGray
