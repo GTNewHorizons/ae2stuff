@@ -51,3 +51,5 @@ ae2stuff.visualiser.mode.no_num=Afficher les cannaux et le noeud
 ae2stuff.visualiser.mode.p2p=Afficher les lien P2P
 
 itemGroup.bdew.ae2stuff=AE2 Stuff
+
+ae2stuff.config.client=Client
