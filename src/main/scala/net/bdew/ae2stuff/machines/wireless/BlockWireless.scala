@@ -243,29 +243,23 @@ class ItemBlockWireless(b: Block) extends ItemBlockTooltip(b) {
   ): Unit = {
     super.addInformation(stack, player, list, advanced)
     val itemDamage = stack.getItemDamage
+    val tooltip = list.asInstanceOf[util.List[String]]
     if (itemDamage == 17) {
-      list
-        .asInstanceOf[util.List[String]]
-        .add(Misc.toLocal("tile.ae2stuff.WirelessHub.name"))
-      list
-        .asInstanceOf[util.List[String]]
-        .add(Misc.toLocal(AEColor.Transparent.unlocalizedName))
+      tooltip.add(Misc.toLocal("tile.ae2stuff.WirelessHub.name"))
+      tooltip.add(Misc.toLocal(AEColor.Transparent.unlocalizedName))
     } else if (itemDamage > 16) {
-      list
-        .asInstanceOf[util.List[String]]
-        .add(Misc.toLocal("tile.ae2stuff.WirelessHub.name"))
-      list
-        .asInstanceOf[util.List[String]]
-        .add(
-          Misc.toLocal(AEColor.values().apply(itemDamage - 18).unlocalizedName)
-        )
+      tooltip.add(Misc.toLocal("tile.ae2stuff.WirelessHub.name"))
+      tooltip.add(
+        Misc.toLocal(AEColor.values().apply(itemDamage - 18).unlocalizedName)
+      )
     } else {
       val color =
         if (itemDamage == 0) AEColor.Transparent
         else AEColor.values().apply(itemDamage - 1)
-      list
-        .asInstanceOf[util.List[String]]
-        .add(Misc.toLocal(color.unlocalizedName))
+      tooltip.add(Misc.toLocal(color.unlocalizedName))
+    }
+    if (itemDamage == 0 || itemDamage == 17) {
+      tooltip.add(Misc.toLocal("tile.ae2stuff.Wireless.colorTip"))
     }
   }
 }
