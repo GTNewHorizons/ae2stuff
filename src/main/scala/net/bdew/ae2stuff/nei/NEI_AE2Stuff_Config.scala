@@ -12,6 +12,8 @@ package net.bdew.ae2stuff.nei
 import codechicken.nei.api.{API, GuiInfo, IConfigureNEI}
 import codechicken.nei.guihook.GuiContainerManager
 import net.bdew.ae2stuff.machines.encoder.GuiEncoder
+import net.bdew.ae2stuff.machines.wireless.BlockWireless
+import net.minecraft.item.ItemStack
 
 class NEI_AE2Stuff_Config extends IConfigureNEI {
   override def loadConfig(): Unit = {
@@ -21,10 +23,15 @@ class NEI_AE2Stuff_Config extends IConfigureNEI {
       EncoderOverlayHandler,
       "crafting"
     )
+    for (i <- 1 until 17) {
+      API.hideItem(new ItemStack(BlockWireless, 1, i))
+      API.hideItem(new ItemStack(BlockWireless, 1, i + 17))
+    }
     GuiContainerManager.addTooltipHandler(InscriberGuiHandler)
     GuiContainerManager.addInputHandler(InscriberGuiHandler)
   }
 
   override def getName = "AE2 Stuff"
+
   override def getVersion = "AE2STUFF_VER"
 }
