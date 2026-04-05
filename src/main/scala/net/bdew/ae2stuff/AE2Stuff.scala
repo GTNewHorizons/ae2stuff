@@ -109,7 +109,7 @@ object AE2Stuff {
   }
 
   @EventHandler
-  def onServerStarting(event: FMLServerStartingEvent): Unit = {
+  def onServerStopped(event: FMLServerStoppedEvent): Unit = {
     VisualiserPlayerTracker.clear()
   }
 }
