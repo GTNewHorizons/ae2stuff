@@ -76,7 +76,7 @@ object AE2Stuff {
     TuningLoader.loadConfigFiles()
     Machines.load()
     Items.load()
-    isGTloaded = Loader.isModLoaded("gregtech")
+    isGT5uNHloaded = Loader.isModLoaded("gregtech_nh")
   }
 
   @EventHandler
