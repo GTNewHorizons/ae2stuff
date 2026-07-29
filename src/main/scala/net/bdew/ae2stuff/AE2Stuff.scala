@@ -58,7 +58,7 @@ object AE2Stuff {
     Keyboard.CHAR_NONE
   )
 
-  var isGTloaded = false
+  var isGT5uNHloaded = false
 
   def logDebug(msg: String, args: Any*) = log.debug(msg.format(args: _*))
   def logInfo(msg: String, args: Any*) = log.info(msg.format(args: _*))
