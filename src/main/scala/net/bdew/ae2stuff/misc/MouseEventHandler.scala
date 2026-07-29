@@ -40,12 +40,12 @@ object MouseEventHandler {
       var newMode = ItemVisualiser.getMode(stack)
       if (ev.dwheel.signum > 0) {
         newMode = Misc.nextInSeq(VISUALISATION_MODES, newMode)
-        if (!AE2Stuff.isGTloaded && newMode == VisualisationModes.PROXY) {
+        if (!AE2Stuff.isGT5uNHloaded && newMode == VisualisationModes.PROXY) {
           newMode = Misc.nextInSeq(VISUALISATION_MODES, newMode)
         }
       } else {
         newMode = Misc.prevInSeq(VISUALISATION_MODES, newMode)
-        if (!AE2Stuff.isGTloaded && newMode == VisualisationModes.PROXY) {
+        if (!AE2Stuff.isGT5uNHloaded && newMode == VisualisationModes.PROXY) {
           newMode = Misc.prevInSeq(VISUALISATION_MODES, newMode)
         }
       }
