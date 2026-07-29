@@ -152,7 +152,7 @@ object ItemVisualiser extends SimpleItem("Visualiser") with ItemLocationStore {
           VLink(n1, n2, c.getUsedChannels, flags)
         }
 
-        if (AE2Stuff.isGTloaded) {
+        if (AE2Stuff.isGT5uNHloaded) {
           for {
             node <- grid.getNodes
           } {
