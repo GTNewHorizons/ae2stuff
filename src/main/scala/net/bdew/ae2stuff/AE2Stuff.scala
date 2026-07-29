@@ -58,7 +58,7 @@ object AE2Stuff {
     Keyboard.CHAR_NONE
   )
 
-  var isGTloaded = false
+  var isGT5uNHloaded = false
 
   def logDebug(msg: String, args: Any*) = log.debug(msg.format(args: _*))
   def logInfo(msg: String, args: Any*) = log.info(msg.format(args: _*))
@@ -76,7 +76,7 @@ object AE2Stuff {
     TuningLoader.loadConfigFiles()
     Machines.load()
     Items.load()
-    isGTloaded = Loader.isModLoaded("gregtech")
+    isGT5uNHloaded = Loader.isModLoaded("gregtech_nh")
   }
 
   @EventHandler
